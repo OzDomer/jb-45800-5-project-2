@@ -1,7 +1,8 @@
 import './App.css'
 import store from "./shared/store/store"
 import { Provider } from 'react-redux'
-import Layout from './shared/layout/Layout'
+import { RouterProvider } from 'react-router-dom'
+import router from './router/router'
 
 function App() {
   
@@ -9,7 +10,7 @@ function App() {
   return (
     <>
      <Provider store={store}>
-     <Layout />
+     <RouterProvider router={router} />
      </Provider>
     </>
   )

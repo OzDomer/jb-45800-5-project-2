@@ -1,7 +1,10 @@
 import CoinGeckoService from "../../features/home/CoinGeckoService"
 import "./Layout.css"
+import Header from "./Header"
+import Footer from "./Footer"
 import { useAppDispatch, useAppSelector } from "../store/hooks"
 import { populate } from "../../features/home/coins-slice"
+import { Outlet } from "react-router-dom"
 
 
 export default function Layout() {
@@ -15,7 +18,9 @@ export default function Layout() {
     }
     return (
         <>
-    <button onClick={getCoins}>Press here</button>
+        <Header />
+        <Outlet />
+        <Footer />
         </>
     )
 }
