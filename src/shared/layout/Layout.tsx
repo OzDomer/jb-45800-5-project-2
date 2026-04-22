@@ -1,7 +1,7 @@
-import CoinGeckoService from "../../../services/CoinGeckoService"
+import CoinGeckoService from "../../features/home/CoinGeckoService"
 import "./Layout.css"
-import { useAppDispatch, useAppSelector } from "../../../store/hooks"
-import { populate } from "../../../store/coins-slice"
+import { useAppDispatch, useAppSelector } from "../store/hooks"
+import { populate } from "../../features/home/coins-slice"
 
 
 export default function Layout() {

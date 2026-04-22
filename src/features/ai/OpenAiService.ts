@@ -1,5 +1,5 @@
 import axios from "axios"
-import type AiRecommendation from "../models/AiRecommendation"
+import type AiRecommendation from "./AiRecommendation"
 
 export default class OpenAiService {
     async openAiRequest(apiKey: string, coinInformation: AiRecommendation){

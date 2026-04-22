@@ -1,13 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "../components/layout/layout/Layout";
-// import your Layout and page components
+import Layout from "../shared/layout/Layout";
+import Home from "../features/home/Home";
+import Reports from "../features/reports/Reports";
+import AiRecommendation from "../features/ai/AiReccommendation";
+import About from "../features/about/About";
+import NotFound from "../features/not-found/NotFound"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,      // ← this is the "parent route"
+    element: <Layout />,     
     children: [
-      { path: "/", element: <Home /> },           // ← children render in Layout's <Outlet />
+      { path: "/", element: <Home /> },          
       { path: "/reports", element: <Reports /> },
       { path: "/ai", element: <AiRecommendation /> },
       { path: "/about", element: <About /> },

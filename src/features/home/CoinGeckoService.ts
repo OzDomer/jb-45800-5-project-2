@@ -1,7 +1,7 @@
 import axios from "axios"
-import type Coins from "../models/Coins"
-import type MoreInformation from "../models/MoreInformation"
-import type AiRecommendation from "../models/AiRecommendation"
+import type Coins from "./Coins"
+import type MoreInformation from "./MoreInformation"
+import type AiRecommendation from "../ai/AiRecommendation"
 
 const URL = `https://api.coingecko.com/api/v3/`
 

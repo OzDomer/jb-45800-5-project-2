@@ -1,7 +1,7 @@
 import './App.css'
-import store from "../../store/store"
+import store from "./shared/store/store"
 import { Provider } from 'react-redux'
-import Layout from '../layout/layout/Layout'
+import Layout from './shared/layout/Layout'
 
 function App() {
   
