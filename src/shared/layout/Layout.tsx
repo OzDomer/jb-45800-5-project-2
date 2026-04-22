@@ -1,26 +1,17 @@
-import CoinGeckoService from "../../features/home/CoinGeckoService"
+import { Outlet } from "react-router-dom"
 import "./Layout.css"
 import Header from "./Header"
 import Footer from "./Footer"
-import { useAppDispatch, useAppSelector } from "../store/hooks"
-import { populate } from "../../features/home/coins-slice"
-import { Outlet } from "react-router-dom"
-
+import { useState } from "react"
 
 export default function Layout() {
-    const dispatch = useAppDispatch()
-    const coins = useAppSelector(state => state.coinsSlice.coins)
-    async function getCoins(){
-        const  respone = await new CoinGeckoService().getAllCoins()
-        dispatch(populate(respone))
-        console.log(respone)
-        console.log(coins.length)
-    }
+   const [searchTerm, setSearchTerm]= useState<string>("")
+    
     return (
-        <>
-        <Header />
-        <Outlet />
+        <div>
+        <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+        <Outlet context={searchTerm} />
         <Footer />
-        </>
+        </div>
     )
 }

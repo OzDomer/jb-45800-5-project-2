@@ -12,7 +12,7 @@ export default function CoinCard(props: CoinCardProps){
             ID: {id}
             SYMBOL: {symbol}
             NAME: {name}
-            IMAGE {image}
+            <img src={image} />
             PRICE CHANGE RARARA: {price_change_percentage_24h}
         </div>
     )

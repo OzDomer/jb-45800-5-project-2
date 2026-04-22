@@ -4,12 +4,14 @@ import "./Home.css"
 import CoinGeckoService from "./CoinGeckoService"
 import { populate } from "./coins-slice"
 import CoinCard from "./CoinCard"
+import { useOutletContext } from "react-router-dom"
 
 // REFACTOR INTO THUNKS AT A LATER DATE
 
 
 export default function Home() {   
         const dispatch = useAppDispatch()
+        const searchTerm = useOutletContext<string>()
         const coins = useAppSelector(state => state.coinsSlice.coins)
         const didRun = useRef(false)
     useEffect(() => {
@@ -19,9 +21,9 @@ export default function Home() {
     // fetch and dispatch  
         (async function (){
             try{
-            const  respone = await new CoinGeckoService().getAllCoins()
-            dispatch(populate(respone))
-            console.log(respone)
+            const  response = await new CoinGeckoService().getAllCoins()
+            dispatch(populate(response))
+            console.log(response)
             console.log(coins.length)
         }
         catch(e){
@@ -32,13 +34,16 @@ export default function Home() {
     }
 }
         , []) 
+        const filtered = coins.filter(coin => {
+        const term = searchTerm.toLowerCase()
+        return coin.name.toLowerCase().includes(term) 
+      || coin.symbol.toLowerCase().includes(term)
+})
     return(
         <div>
-        {coins.length > 0 &&
-
-            coins.map(coin => <CoinCard key={coin.id} coinCard={coin}/>)            
-
-        }
+        {filtered.length > 0 && 
+        filtered.map(coin => <CoinCard key={coin.id} coinCard={coin}/>)}
+        
         {coins.length === 0 &&
         "WAIT"
         }
