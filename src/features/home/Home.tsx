@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
 import CoinGeckoService from "./CoinGeckoService"
 import { populate } from "./coins-slice"
+import CoinCard from "./CoinCard"
 
 // REFACTOR INTO THUNKS AT A LATER DATE
 
@@ -33,7 +34,14 @@ export default function Home() {
         , []) 
     return(
         <div>
-            AGOGOGOOGO
+        {coins.length > 0 &&
+
+            coins.map(coin => <CoinCard key={coin.id} coinCard={coin}/>)            
+
+        }
+        {coins.length === 0 &&
+        "WAIT"
+        }
         </div>
     )
 }
