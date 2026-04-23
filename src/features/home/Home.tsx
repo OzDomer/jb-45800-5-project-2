@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
 import CoinGeckoService from "./CoinGeckoService"
@@ -13,6 +13,7 @@ export default function Home() {
         const dispatch = useAppDispatch()
         const searchTerm = useOutletContext<string>()
         const coins = useAppSelector(state => state.coinsSlice.coins)
+        const [openCoinId, setOpenCoinId] = useState<string | null>(null)
         const didRun = useRef(false)
     useEffect(() => {
         if (didRun.current) return
@@ -33,16 +34,22 @@ export default function Home() {
        
     }
 }
-        , []) 
+        , [])
+        function handleMoreInfoClick(coinId: string) {
+            coinId === openCoinId ? setOpenCoinId(null) : setOpenCoinId(coinId)
+
+            console.log(`THE BUTTON WORKS YPPIE`)
+        } 
         const filtered = coins.filter(coin => {
         const term = searchTerm.toLowerCase()
         return coin.name.toLowerCase().includes(term) 
       || coin.symbol.toLowerCase().includes(term)
 })
+    
     return(
         <div>
         {filtered.length > 0 && 
-        filtered.map(coin => <CoinCard key={coin.id} coinCard={coin}/>)}
+        filtered.map(coin => <CoinCard key={coin.id} coinCard={coin} isOpen={openCoinId === coin.id} onMoreInfoClick={() => handleMoreInfoClick(coin.id)}/>)}
         
         {coins.length === 0 &&
         "WAIT"
