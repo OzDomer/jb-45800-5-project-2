@@ -24,8 +24,6 @@ export default function Home() {
             try{
             const  response = await new CoinGeckoService().getAllCoins()
             dispatch(populate(response))
-            console.log(response)
-            console.log(coins.length)
         }
         catch(e){
             console.log(e)

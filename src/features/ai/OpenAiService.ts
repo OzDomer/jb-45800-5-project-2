@@ -8,7 +8,7 @@ export default class OpenAiService {
                 {
                 model: 'gpt-5',
                 instructions: 'craft a prompt here later',
-                input: `${coinInformation} CHANGE LATER `},
+                input: `${JSON.stringify(coinInformation)} CHANGE LATER `},
                             
                { 
                 headers: 
