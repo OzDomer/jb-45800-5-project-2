@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useAppSelector } from "../../shared/store/hooks"
 import CryptoCompareService from "./CryptoCompareService"
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts"
 import "./Reports.css"
 
 export default function Reports() {    
@@ -11,7 +12,7 @@ export default function Reports() {
     
      useEffect(() => {
         if (userCoins.length !== 0) {
-        setInterval(() => {
+        const intervalId = setInterval(() => {
         (async function (){
                     try{
                     const  response = await new CryptoCompareService().getCoinPriceRt(userCoins.map(coin => coin.coinSymbol))
@@ -34,6 +35,7 @@ export default function Reports() {
     
 
         return () => {
+            clearInterval(intervalId)
         }
     }}, [userCoins])
             console.log(arrayForGraph)            
@@ -41,6 +43,20 @@ export default function Reports() {
     
     return(
         <>
+        <LineChart width={800} height={400} data={arrayForGraph}>
+    <XAxis dataKey="time" />
+    <YAxis />
+    <Tooltip />
+    <Legend />
+    {userCoins.map(coin => (
+        <Line 
+            key={coin.coinSymbol}
+            type="monotone" 
+            dataKey={coin.coinSymbol} 
+            stroke="#8884d8" 
+        />
+    ))}
+</LineChart>
         </>
     )
 }
