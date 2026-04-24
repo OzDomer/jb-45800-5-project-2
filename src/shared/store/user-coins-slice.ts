@@ -15,7 +15,7 @@ const userCoinsSlice = createSlice({
     name: "userCoins",
     initialState,
     reducers: {
-        populate: (state, action: PayloadAction<SelectedCoin>) => {
+        addCoin: (state, action: PayloadAction<SelectedCoin>) => {
             state.UserCoins.push(action.payload)
         },
         removeCoin: (state, action: PayloadAction<string>) => {
@@ -23,6 +23,6 @@ const userCoinsSlice = createSlice({
         }
     }
 })
-export const { populate, removeCoin } = userCoinsSlice.actions
+export const { addCoin, removeCoin } = userCoinsSlice.actions
 
 export default userCoinsSlice.reducer
