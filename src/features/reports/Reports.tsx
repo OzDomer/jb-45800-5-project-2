@@ -14,19 +14,13 @@ export default function Reports() {
         if (userCoins.length !== 0) {
             const intervalId = setInterval(() => {
                 (async function () {
-                    try {
-                        const response = await new CryptoCompareService().getCoinPriceRt(userCoins.map(coin => coin.coinSymbol))
-                        if (response) {
-                            const entry: { [key: string]: string | number } = { time: new Date().toLocaleTimeString() }
-                            Object.keys(response).forEach(key => {
-                                entry[key] = response[key].USD
-                            })
-
-                            setArrayForGraph(arrayForGraph => [...arrayForGraph, entry].slice(-120))
-                        }
-                    }
-                    catch (e) {
-                        console.error(e)
+                    const response = await new CryptoCompareService().getCoinPriceRt(userCoins.map(coin => coin.coinSymbol))
+                    if (response) {
+                        const entry: { [key: string]: string | number } = { time: new Date().toLocaleTimeString() }
+                        Object.keys(response).forEach(key => {
+                            entry[key] = response[key].USD
+                        })
+                        setArrayForGraph(arrayForGraph => [...arrayForGraph, entry].slice(-120))
                     }
                 })()
 

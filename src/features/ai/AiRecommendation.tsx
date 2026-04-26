@@ -5,8 +5,6 @@ import CoinGeckoService from "../home/CoinGeckoService"
 import OpenAiService from "./OpenAiService"
 import AiCard from "./AiCard"
 
-
-
 export default function AiRecommendation() {
 
     const coins = useAppSelector(state => state.coinsSlice.coins)
@@ -22,20 +20,15 @@ export default function AiRecommendation() {
     }
 
     async function fetchRecommendation(coinId: string) {
-        try {
-            const coinDataResponse = await new CoinGeckoService().AiRecommendation(coinId)
-            if (!coinDataResponse) {
-                return
-            }
-            const openAiResponse = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
-            if (!openAiResponse) {
-                return null
-            }
-            return openAiResponse.data.output[1].content[0].text
+        const coinDataResponse = await new CoinGeckoService().AiRecommendation(coinId)
+        if (!coinDataResponse) {
+            return
         }
-        catch (e) {
-            console.error(e)
+        const openAiResponse = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
+        if (!openAiResponse) {
+            return null
         }
+        return openAiResponse.data.output[1].content[0].text
     }
     async function getOneCoinRecommendation(coinId: string) {
         setIsLoading(true)
@@ -70,9 +63,9 @@ export default function AiRecommendation() {
                 <input placeholder="Enter Your api key here" type="password" value={apiKey} onChange={e => setApiKey(e.target.value)} />
                 <button>Enter api key</button>
             </form>
-           
+
             <button onClick={getAllCoinRecommendations} disabled={isLoading}>Get all coins</button>
-            
+
             {selectedCoinsData.filter(coin => coin !== undefined).map(coin =>
                 <AiCard
                     key={coin.id}

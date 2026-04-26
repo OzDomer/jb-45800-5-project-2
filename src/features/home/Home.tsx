@@ -8,7 +8,6 @@ import { useOutletContext } from "react-router-dom"
 
 // REFACTOR INTO THUNKS AT A LATER DATE
 
-
 export default function Home() {
     const dispatch = useAppDispatch()
     const searchTerm = useOutletContext<string>()
@@ -20,15 +19,10 @@ export default function Home() {
         didRun.current = true
         if (coins.length === 0) {
             (async function () {
-                try {
-                    const response = await new CoinGeckoService().getAllCoins()
-                    dispatch(populate(response))
-                }
-                catch (e) {
-                    console.error(e)
-                }
-            })()
+                const response = await new CoinGeckoService().getAllCoins()
+                dispatch(populate(response))
 
+            })()
         }
     }
         , [])
