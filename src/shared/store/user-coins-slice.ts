@@ -1,4 +1,4 @@
-import { createSlice ,type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 interface SelectedCoin {
     coinId: string,
@@ -9,13 +9,16 @@ interface UserCoins {
 }
 
 const initialState: UserCoins = {
-    userCoins:[]
+    userCoins: []
 }
 const userCoinsSlice = createSlice({
     name: "userCoins",
     initialState,
     reducers: {
         addCoin: (state, action: PayloadAction<SelectedCoin>) => {
+            if (state.userCoins.some(coin => coin.coinId === action.payload.coinId)) {
+                return
+            }
             state.userCoins.push(action.payload)
         },
         removeCoin: (state, action: PayloadAction<string>) => {
