@@ -1,5 +1,5 @@
 import axios, { type AxiosResponse } from "axios"
-import type AiRecommendation from "./AiRecommendation"
+import type AiRecommendation from "./AiRecommendation.ts"
 
 export default class OpenAiService {
     async openAiRequest(apiKey: string, coinInformation: AiRecommendation): Promise<AxiosResponse | null>{
@@ -17,7 +17,7 @@ export default class OpenAiService {
             return data
         }
         catch(e){
-            console.log(e)
+            console.error(e)
             return null
         }
     }

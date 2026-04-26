@@ -1,8 +1,8 @@
-import type Coins from "../home/Coins"
+import type Coin from "../home/Coin"
 import "./AiCard.css"
 
 interface AiCardProps {
-    coin: Coins
+    coin: Coin
     recommendation: string
     onGetRecommendation: () => void
 }

@@ -5,21 +5,21 @@ interface SelectedCoin {
     coinSymbol: string
 }
 interface UserCoins {
-    UserCoins: SelectedCoin[]
+    userCoins: SelectedCoin[]
 }
 
 const initialState: UserCoins = {
-    UserCoins:[]
+    userCoins:[]
 }
 const userCoinsSlice = createSlice({
     name: "userCoins",
     initialState,
     reducers: {
         addCoin: (state, action: PayloadAction<SelectedCoin>) => {
-            state.UserCoins.push(action.payload)
+            state.userCoins.push(action.payload)
         },
         removeCoin: (state, action: PayloadAction<string>) => {
-            state.UserCoins = state.UserCoins.filter(coin => coin.coinId !== action.payload)
+            state.userCoins = state.userCoins.filter(coin => coin.coinId !== action.payload)
         }
     }
 })

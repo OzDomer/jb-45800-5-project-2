@@ -1,18 +1,18 @@
 import axios from "axios"
-import type Coins from "./Coins"
+import type Coin from "./Coin"
 import type MoreInformation from "./MoreInformation"
-import type AiRecommendation from "../ai/AiRecommendation"
+import type AiRecommendation from "../ai/AiRecommendation.ts"
 
 const URL = `https://api.coingecko.com/api/v3/`
 
 export default class CoinGeckoService {
-    async getAllCoins() : Promise<Coins[]>{
+    async getAllCoins() : Promise<Coin[]>{
         try{
-            const {data} = await axios.get<Coins[]>(URL + "coins/markets?vs_currency=usd")
+            const {data} = await axios.get<Coin[]>(URL + "coins/markets?vs_currency=usd")
             return data   
         }
         catch(e){
-            console.log(e)
+            console.error(e)
             return []
         }
     }
@@ -22,7 +22,7 @@ export default class CoinGeckoService {
             return data   
         }
         catch(e){
-            console.log(e)
+            console.error(e)
             return null
         }
     }
@@ -32,7 +32,7 @@ export default class CoinGeckoService {
             return data   
         }
         catch(e){
-            console.log(e)
+            console.error(e)
             return null
         }
     }

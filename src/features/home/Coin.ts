@@ -1,4 +1,4 @@
-export default interface Coins {
+export default interface Coin {
 
     id: string,
     symbol: string,

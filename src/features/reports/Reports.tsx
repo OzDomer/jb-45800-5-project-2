@@ -4,59 +4,57 @@ import CryptoCompareService from "./CryptoCompareService"
 import { LineChart, Line, XAxis, YAxis, Tooltip, Legend } from "recharts"
 import "./Reports.css"
 
-export default function Reports() {    
-    
-    const userCoins = useAppSelector(state => state.userCoinsSlice.UserCoins)
+export default function Reports() {
+
+    const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
     const [arrayForGraph, setArrayForGraph] = useState<{ [key: string]: string | number }[]>([])
 
-    
-     useEffect(() => {
+
+    useEffect(() => {
         if (userCoins.length !== 0) {
-        const intervalId = setInterval(() => {
-        (async function (){
-                    try{
-                    const  response = await new CryptoCompareService().getCoinPriceRt(userCoins.map(coin => coin.coinSymbol))
-                    if (response){
-                    const entry: { [key: string]: string | number } = { time: new Date().toLocaleTimeString() }
-                    Object.keys(response).forEach(key => {
-                    entry[key] = response[key].USD
-    })
-            
-            setArrayForGraph(arrayForGraph => [...arrayForGraph, entry])       
-            console.log(arrayForGraph)            
-    }
-                }
-                catch(e){
-                    console.log(e)
-                }
-                })()    
-           
-        }, 1* 1000)
-    
+            const intervalId = setInterval(() => {
+                (async function () {
+                    try {
+                        const response = await new CryptoCompareService().getCoinPriceRt(userCoins.map(coin => coin.coinSymbol))
+                        if (response) {
+                            const entry: { [key: string]: string | number } = { time: new Date().toLocaleTimeString() }
+                            Object.keys(response).forEach(key => {
+                                entry[key] = response[key].USD
+                            })
 
-        return () => {
-            clearInterval(intervalId)
+                            setArrayForGraph(arrayForGraph => [...arrayForGraph, entry])
+                        }
+                    }
+                    catch (e) {
+                        console.error(e)
+                    }
+                })()
+
+            }, 1 * 1000)
+
+
+            return () => {
+                clearInterval(intervalId)
+            }
         }
-    }}, [userCoins])
-            console.log(arrayForGraph)            
+    }, [userCoins])
 
-    
-    return(
+    return (
         <>
-        <LineChart width={800} height={400} data={arrayForGraph}>
-    <XAxis dataKey="time" />
-    <YAxis />
-    <Tooltip />
-    <Legend />
-    {userCoins.map(coin => (
-        <Line 
-            key={coin.coinSymbol}
-            type="monotone" 
-            dataKey={coin.coinSymbol} 
-            stroke="#8884d8" 
-        />
-    ))}
-</LineChart>
+            <LineChart width={800} height={400} data={arrayForGraph}>
+                <XAxis dataKey="time" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                {userCoins.map(coin => (
+                    <Line
+                        key={coin.coinSymbol}
+                        type="monotone"
+                        dataKey={coin.coinSymbol}
+                        stroke="#8884d8"
+                    />
+                ))}
+            </LineChart>
         </>
     )
 }

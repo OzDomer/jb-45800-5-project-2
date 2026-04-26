@@ -1,8 +1,8 @@
 import { createSlice ,type PayloadAction } from "@reduxjs/toolkit"
-import type Coins from "./Coins"
+import type Coin from "./Coin"
 
 interface CoinsState{
-    coins: Coins[]
+    coins: Coin[]
 }
 
 const initialState: CoinsState = {
@@ -12,7 +12,7 @@ const coinsSlice = createSlice({
     name: "coins",
     initialState,
     reducers: {
-        populate: (state, action: PayloadAction<Coins[]>) => {
+        populate: (state, action: PayloadAction<Coin[]>) => {
             state.coins = action.payload
         }
     }

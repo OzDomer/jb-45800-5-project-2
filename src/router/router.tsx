@@ -2,7 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import Layout from "../shared/layout/Layout";
 import Home from "../features/home/Home";
 import Reports from "../features/reports/Reports";
-import AiRecommendation from "../features/ai/AiReccommendation";
+import AiRecommendation from "../features/ai/AiRecommendation.tsx";
 import About from "../features/about/About";
 import NotFound from "../features/not-found/NotFound"
 

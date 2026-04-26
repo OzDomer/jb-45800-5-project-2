@@ -20,7 +20,7 @@ export default function MoreInfo({coinId}: MoreInfoProps){
         setCoinInformation(response)
             }
             catch(e){
-                console.log(e)
+                console.error(e)
             }    
         }
     )()
