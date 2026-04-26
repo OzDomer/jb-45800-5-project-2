@@ -30,7 +30,7 @@ export default function Reports() {
                     }
                 })()
 
-            }, 1 * 1000)
+            }, 5 * 1000)
 
 
             return () => {
