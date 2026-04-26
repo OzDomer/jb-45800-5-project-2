@@ -22,7 +22,7 @@ export default function Reports() {
                                 entry[key] = response[key].USD
                             })
 
-                            setArrayForGraph(arrayForGraph => [...arrayForGraph, entry])
+                            setArrayForGraph(arrayForGraph => [...arrayForGraph, entry].slice(-120))
                         }
                     }
                     catch (e) {
