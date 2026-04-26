@@ -10,7 +10,7 @@ export default function AiRecommendation() {
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
 
     const [apiKey, setApiKey] = useState(localStorage.getItem("API_KEY") || "")
-    const [recommendations, setRecommendations] = useState<{ [coinId: string]: string }>({})
+    const [recommendations, setRecommendations] = useState<{ [coinId: string]: string | undefined}>({})
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     function setApiKeyToLocalStorage(value: string) {
@@ -24,8 +24,9 @@ export default function AiRecommendation() {
         }
         const openAiResponse = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
         if (!openAiResponse) {
-            return null
+            return
         }
+        //  the exact shape is derived from the openai model used gpt-5-nano index 0 is the reasoning ( token used etc.) index 1 is the actual response
         return openAiResponse.data.output[1].content[0].text
     }
     async function getOneCoinRecommendation(coinId: string) {
@@ -45,7 +46,7 @@ export default function AiRecommendation() {
         try {
             const results = await Promise.all(
                 userCoins.map(coin => fetchRecommendation(coin.coinId)))
-            const newEntries: { [coinId: string]: string } = {}
+            const newEntries: { [coinId: string]: string | undefined} = {}
             userCoins.forEach((coin, index) => {
                 newEntries[coin.coinId] = results[index]
             })

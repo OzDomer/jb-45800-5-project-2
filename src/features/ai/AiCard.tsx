@@ -3,7 +3,7 @@ import "./AiCard.css"
 
 interface AiCardProps {
     coin: SelectedCoin
-    recommendation: string
+    recommendation: string | undefined
     onGetRecommendation: () => void
 }
 
