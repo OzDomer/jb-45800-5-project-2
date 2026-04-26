@@ -15,7 +15,7 @@ export default function CoinCard({ coinCard, isOpen, onMoreInfoClick }: CoinCard
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
     const dispatch = useAppDispatch()
     function addCoinToWatchlist() {
-        dispatch(addCoin({ coinId: id, coinSymbol: symbol.toUpperCase() }))
+        dispatch(addCoin({ coinId: id, coinSymbol: symbol.toUpperCase() , name, image}))
     }
 
     return (

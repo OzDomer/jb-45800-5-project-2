@@ -1,14 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-interface SelectedCoin {
-    coinId: string,
+export interface SelectedCoin {
+    coinId: string
     coinSymbol: string
+    name: string
+    image: string
 }
-interface UserCoins {
+interface UserCoinsState {
     userCoins: SelectedCoin[]
 }
 
-const initialState: UserCoins = {
+const initialState: UserCoinsState = {
     userCoins: []
 }
 const userCoinsSlice = createSlice({

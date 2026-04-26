@@ -7,10 +7,8 @@ import AiCard from "./AiCard"
 
 export default function AiRecommendation() {
 
-    const coins = useAppSelector(state => state.coinsSlice.coins)
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
 
-    const selectedCoinsData = userCoins.map(uc => coins.find(c => c.id === uc.coinId))
     const [apiKey, setApiKey] = useState(localStorage.getItem("API_KEY") || "")
     const [recommendations, setRecommendations] = useState<{ [coinId: string]: string }>({})
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -65,13 +63,15 @@ export default function AiRecommendation() {
             </form>
 
             <button onClick={getAllCoinRecommendations} disabled={isLoading}>Get all coins</button>
+            {userCoins.map(coin => 
+            <AiCard 
+            key={coin.coinId}
+            coin={coin} 
+            recommendation={recommendations[coin.coinId]}
+            onGetRecommendation={()=> getOneCoinRecommendation(coin.coinId)}/>
 
-            {selectedCoinsData.filter(coin => coin !== undefined).map(coin =>
-                <AiCard
-                    key={coin.id}
-                    coin={coin}
-                    recommendation={recommendations[coin.id]}
-                    onGetRecommendation={() => getOneCoinRecommendation(coin.id)} />)}
+            )}
+                
         </div>
     )
 
