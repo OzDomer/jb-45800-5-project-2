@@ -1,4 +1,4 @@
-export default interface AiRecommendation {
+export default interface CoinMarketData {
     name: string,
     market_data: {
         current_price: {

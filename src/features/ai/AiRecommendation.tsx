@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useAppSelector } from "../../shared/store/hooks"
 import "./AiRecommendation.css"
-import CoinGeckoService from "../home/CoinGeckoService"
-import OpenAiService from "./OpenAiService"
+import CoinGeckoService from "../../shared/services/CoinGeckoService"
+import OpenAiService from "../../shared/services/OpenAiService"
 import AiCard from "./AiCard"
 
 export default function AiRecommendation() {
@@ -18,7 +18,7 @@ export default function AiRecommendation() {
     }
 
     async function fetchRecommendation(coinId: string) {
-        const coinDataResponse = await new CoinGeckoService().AiRecommendation(coinId)
+        const coinDataResponse = await new CoinGeckoService().getCoinMarketData(coinId)
         if (!coinDataResponse) {
             return
         }

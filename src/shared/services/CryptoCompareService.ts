@@ -1,5 +1,5 @@
 import axios from "axios";
-import type CoinPriceRT from "./CoinPriceRT";
+import type CoinPriceRT from "../models/CoinPriceRT";
 
 export default class CryptoCompareService {
     async getCoinPriceRt(coins: string[]): Promise<CoinPriceRT | null> {

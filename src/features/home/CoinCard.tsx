@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import { addCoin } from "../../shared/store/user-coins-slice"
 import "./CoinCard.css"
-import type Coin from "./Coin"
+import type Coin from "../../shared/models/Coin"
 import MoreInfo from "./MoreInfo"
 
 interface CoinCardProps {

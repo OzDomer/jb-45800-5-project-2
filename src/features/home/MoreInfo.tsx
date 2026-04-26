@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import "./MoreInfo.css"
-import type MoreInformation from "./MoreInformation"
-import CoinGeckoService from "./CoinGeckoService"
+import type MoreInformation from "../../shared/models/MoreInformation"
+import CoinGeckoService from "../../shared/services/CoinGeckoService"
 
 
 interface MoreInfoProps {

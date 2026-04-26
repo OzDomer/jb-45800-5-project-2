@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
-import CoinGeckoService from "./CoinGeckoService"
-import { populate } from "./coins-slice"
+import CoinGeckoService from "../../shared/services/CoinGeckoService"
+import { populate } from "../../shared/store/coins-slice"
 import CoinCard from "./CoinCard"
 import { useOutletContext } from "react-router-dom"
 

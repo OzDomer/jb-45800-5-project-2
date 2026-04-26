@@ -1,9 +1,9 @@
 import axios, { type AxiosResponse } from "axios"
-import type AiRecommendation from "./AiRecommendation.ts"
-import type OpenAiResponse from "./OpenAiResponse.ts"
+import type CoinMarketData from "../models/CoinMarketData"
+import type OpenAiResponse from "../models/OpenAiResponse"
 
 export default class OpenAiService {
-    async openAiRequest(apiKey: string, coinInformation: AiRecommendation): Promise<AxiosResponse<OpenAiResponse> | null>{
+    async openAiRequest(apiKey: string, coinInformation: CoinMarketData): Promise<AxiosResponse<OpenAiResponse> | null>{
         try{
             const data = await axios.post<OpenAiResponse>(`https://api.openai.com/v1/responses`,
                 {
