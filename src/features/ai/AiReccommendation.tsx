@@ -3,6 +3,7 @@ import { useAppSelector } from "../../shared/store/hooks"
 import "./AiRecommendation.css"
 import CoinGeckoService from "../home/CoinGeckoService"
 import OpenAiService from "./OpenAiService"
+import AiCard from "./AiCard"
 
 
 
@@ -20,11 +21,19 @@ const selectedCoinsData = userCoins.map(uc => coins.find(c => c.id === uc.coinId
     }
     
     async function fetchRecommendation(coinId: string) {
+
                 try{
                 const  coinDataResponse = await new CoinGeckoService().AiRecommendation(coinId)
-                const  openAiResponse = await new OpenAiService().openAiRequest(apiKey , coinDataResponse!)
-                console.log(openAiResponse!.data.output[1].content[0].text)
-                return openAiResponse!.data.output[1].content[0].text
+                if (!coinDataResponse){
+                    return
+                }
+                const  openAiResponse = await new OpenAiService().openAiRequest(apiKey , coinDataResponse)
+  
+                if(!openAiResponse){
+                    return null
+                }
+                console.log(openAiResponse.data.output[1].content[0].text)
+                return openAiResponse.data.output[1].content[0].text
                 }
                 catch(e){
                     console.log(e)
@@ -54,15 +63,15 @@ const selectedCoinsData = userCoins.map(uc => coins.find(c => c.id === uc.coinId
             <form onSubmit={(e) => { e.preventDefault(); setApiKeyToLocalStorage(apiKey)}}>
             <input placeholder="Enter Your api key here" type="password" value={apiKey} onChange={e => setApiKey(e.target.value)}/>
             <button>Enter api key</button>
-            </form>    
-            <button onClick={getAllCoinRecommendations}>Get all coins recommendation</button>
-        {userCoins.map(coin => 
-            <div key={coin.coinId}> 
-            <button onClick={() => getOneCoinRecommendation(coin.coinId)} >{coin.coinId}</button> 
-            <div>{recommendations[coin.coinId]}</div> 
-            </div>)}
-            
-        </div>
-    )
+            </form>     
+            <button onClick={getAllCoinRecommendations}>Get all coins</button>
+            {selectedCoinsData.filter( coin => coin !== undefined).map(coin => 
+            <AiCard 
+            key={coin.id} 
+            coin={coin}
+            recommendation={recommendations[coin.id]} 
+            onGetRecommendation={() => getOneCoinRecommendation(coin.id)}/>)}
+            </div>
+                )
 }
 
