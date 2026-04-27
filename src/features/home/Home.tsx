@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
-import CoinGeckoService from "../../shared/services/CoinGeckoService"
+import coinGeckoService from "../../shared/services/CoinGeckoService"
 import { populate } from "../../shared/store/coins-slice"
 import CoinCard from "./CoinCard"
 import { type SelectedCoin, addCoin, removeCoin } from "../../shared/store/user-coins-slice"
@@ -23,7 +23,7 @@ export default function Home() {
         didRun.current = true
         if (coins.length === 0) {
             (async function () {
-                const response = await new CoinGeckoService().getAllCoins()
+                const response = await coinGeckoService.getAllCoins()
                 dispatch(populate(response))
 
             })()

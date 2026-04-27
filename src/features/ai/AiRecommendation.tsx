@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useAppSelector } from "../../shared/store/hooks"
 import "./AiRecommendation.css"
-import CoinGeckoService from "../../shared/services/CoinGeckoService"
-import OpenAiService from "../../shared/services/OpenAiService"
+import coinGeckoService from "../../shared/services/CoinGeckoService"
+import openAiService from "../../shared/services/OpenAiService"
 import AiCard from "./AiCard"
 import type { Recommendation } from "../../shared/models/Recommendation"
 
@@ -20,9 +20,9 @@ export default function AiRecommendation() {
     async function fetchRecommendation(coinId: string) {
         setRecommendations(prev => ({ ...prev, [coinId]: { status: "loading" } }))
         try {
-            const coinDataResponse = await new CoinGeckoService().getCoinMarketData(coinId)
+            const coinDataResponse = await coinGeckoService.getCoinMarketData(coinId)
             if (!coinDataResponse) throw new Error("...")
-            const text = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
+            const text = await openAiService.openAiRequest(apiKey, coinDataResponse)
             setRecommendations(prev => ({ ...prev, [coinId]: { status: "success", text } }))
         } catch (e) {
             setRecommendations(prev => ({ ...prev, [coinId]: { status: "error", message: "Error in fetching AI response. Try again?" } }))

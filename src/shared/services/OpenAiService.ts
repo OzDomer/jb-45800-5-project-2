@@ -2,7 +2,7 @@ import type CoinMarketData from "../models/CoinMarketData"
 import type OpenAiResponse from "../models/OpenAiResponse"
 import axios from "axios"
 
-export default class OpenAiService {
+class OpenAiService {
     async openAiRequest(apiKey: string, coinInformation: CoinMarketData): Promise<string> {
         const { data } = await axios.post<OpenAiResponse>(`https://api.openai.com/v1/responses`,
             {
@@ -20,3 +20,4 @@ export default class OpenAiService {
 
     }
 }
+export default new OpenAiService()

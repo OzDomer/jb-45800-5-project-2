@@ -1,7 +1,7 @@
 import axios from "axios";
 import type CoinPriceRT from "../models/CoinPriceRT";
 
-export default class CryptoCompareService {
+class CryptoCompareService {
     async getCoinPriceRt(coins: string[]): Promise<CoinPriceRT | null> {
        try{
         const {data} = await axios.get<CoinPriceRT>(`https://min-api.cryptocompare.com/data/pricemulti?tsyms=usd&fsyms=` + coins.join(","))
@@ -13,3 +13,4 @@ export default class CryptoCompareService {
        }
     }
 }
+export default new CryptoCompareService()

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import "./MoreInfo.css"
 import type MoreInformation from "../../shared/models/MoreInformation"
-import CoinGeckoService from "../../shared/services/CoinGeckoService"
+import coinGeckoService from "../../shared/services/CoinGeckoService"
 
 
 interface MoreInfoProps {
@@ -14,7 +14,7 @@ export default function MoreInfo({ coinId }: MoreInfoProps) {
 
     useEffect(() => {
         (async function () {
-            const response = await new CoinGeckoService().getMoreInfo(coinId)
+            const response = await coinGeckoService.getMoreInfo(coinId)
             setCoinInformation(response)
         }
         )()

@@ -5,7 +5,7 @@ import type CoinMarketData from "../models/CoinMarketData"
 
 const URL = `https://api.coingecko.com/api/v3/`
 
-export default class CoinGeckoService {
+class CoinGeckoService {
     async getAllCoins(): Promise<Coin[]> {
         try {
             const { data } = await axios.get<Coin[]>(URL + "coins/markets?vs_currency=usd")
@@ -37,3 +37,4 @@ export default class CoinGeckoService {
         }
     }
 }
+export default new CoinGeckoService()
