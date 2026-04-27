@@ -25,6 +25,7 @@ export default function AiCard({ coin, recommendation, onGetRecommendation }: Ai
                 coinSymbol: {coinSymbol}
                 name: {name}
                 <img src={image} />
+                <button onClick={onGetRecommendation}>Click me to fetch</button>
             </div>
             {recommendation?.status === "loading" &&
                 <div>
@@ -33,7 +34,10 @@ export default function AiCard({ coin, recommendation, onGetRecommendation }: Ai
             }
             {recommendation?.status === "success" &&
                 <div>
-                    {recommendation.text}
+                    {recommendation.data.flavor}
+                    {recommendation.data.explanation}
+                    {recommendation.data.verdict}
+
                 </div>
             }
 

@@ -22,8 +22,8 @@ export default function AiRecommendation() {
         try {
             const coinDataResponse = await coinGeckoService.getCoinMarketData(coinId)
             if (!coinDataResponse) throw new Error("...")
-            const text = await openAiService.openAiRequest(apiKey, coinDataResponse)
-            setRecommendations(prev => ({ ...prev, [coinId]: { status: "success", text } }))
+            const data = await openAiService.openAiRequest(apiKey, coinDataResponse)
+            setRecommendations(prev => ({ ...prev, [coinId]: { status: "success", data } }))
         } catch (e) {
             setRecommendations(prev => ({ ...prev, [coinId]: { status: "error", message: "Error in fetching AI response. Try again?" } }))
         }

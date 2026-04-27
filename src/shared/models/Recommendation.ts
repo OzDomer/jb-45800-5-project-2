@@ -1,4 +1,6 @@
+import type RecommendationPayload from "./RecommendationPayload";
+
 export type Recommendation =
        | { status: "loading" }
-       | { status: "success", text: string }
+       | { status: "success", data: RecommendationPayload }
        | { status: "error", message: string }
