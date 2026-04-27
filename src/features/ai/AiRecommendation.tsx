@@ -4,58 +4,37 @@ import "./AiRecommendation.css"
 import CoinGeckoService from "../../shared/services/CoinGeckoService"
 import OpenAiService from "../../shared/services/OpenAiService"
 import AiCard from "./AiCard"
+import type { Recommendation } from "../../shared/models/Recommendation"
 
 export default function AiRecommendation() {
 
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
 
     const [apiKey, setApiKey] = useState(localStorage.getItem("API_KEY") || "")
-    const [recommendations, setRecommendations] = useState<{ [coinId: string]: string | undefined}>({})
-    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [recommendations, setRecommendations] = useState<Record<string, Recommendation>>({})
 
     function setApiKeyToLocalStorage(value: string) {
         localStorage.setItem("API_KEY", value)
     }
 
     async function fetchRecommendation(coinId: string) {
-        const coinDataResponse = await new CoinGeckoService().getCoinMarketData(coinId)
-        if (!coinDataResponse) {
-            return
-        }
-        const openAiResponse = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
-        if (!openAiResponse) {
-            return
-        }
-        //  the exact shape is derived from the openai model used gpt-5-nano index 0 is the reasoning ( token used etc.) index 1 is the actual response
-        return openAiResponse.data.output[1].content[0].text
-    }
-    async function getOneCoinRecommendation(coinId: string) {
-        setIsLoading(true)
+        setRecommendations(prev => ({ ...prev, [coinId]: { status: "loading" } }))
         try {
-            const aiResponseOneRecommendation = await fetchRecommendation(coinId)
-            setRecommendations(prev => ({ ...prev, [coinId]: aiResponseOneRecommendation }))
-        }
-        finally {
-            setIsLoading(false)
-
+            const coinDataResponse = await new CoinGeckoService().getCoinMarketData(coinId)
+            if (!coinDataResponse) throw new Error("...")
+            const text = await new OpenAiService().openAiRequest(apiKey, coinDataResponse)
+            setRecommendations(prev => ({ ...prev, [coinId]: { status: "success", text } }))
+        } catch (e) {
+            setRecommendations(prev => ({ ...prev, [coinId]: { status: "error", message: "Error in fetching AI response. Try again?" } }))
         }
     }
 
     async function getAllCoinRecommendations() {
-        setIsLoading(true)
-        try {
-            const results = await Promise.all(
-                userCoins.map(coin => fetchRecommendation(coin.coinId)))
-            const newEntries: { [coinId: string]: string | undefined} = {}
-            userCoins.forEach((coin, index) => {
-                newEntries[coin.coinId] = results[index]
-            })
-            setRecommendations(prev => ({ ...prev, ...newEntries }))
-        }
-        finally {
-            setIsLoading(false)
-        }
+        await Promise.all(userCoins.map(coin => fetchRecommendation(coin.coinId)))
     }
+    
+
+
     return (
         <div className="AiRecommendation">
             <form onSubmit={(e) => { e.preventDefault(); setApiKeyToLocalStorage(apiKey) }}>
@@ -63,16 +42,16 @@ export default function AiRecommendation() {
                 <button>Enter api key</button>
             </form>
 
-            <button onClick={getAllCoinRecommendations} disabled={isLoading}>Get all coins</button>
-            {userCoins.map(coin => 
-            <AiCard 
-            key={coin.coinId}
-            coin={coin} 
-            recommendation={recommendations[coin.coinId]}
-            onGetRecommendation={()=> getOneCoinRecommendation(coin.coinId)}/>
+            <button disabled={Object.values(recommendations).some(r => r.status === "loading")} onClick={getAllCoinRecommendations}>Get all coins</button>
+            {userCoins.map(coin =>
+                <AiCard
+                    key={coin.coinId}
+                    coin={coin}
+                    recommendation={recommendations[coin.coinId]}
+                    onGetRecommendation={() => fetchRecommendation(coin.coinId)} />
 
             )}
-                
+
         </div>
     )
 
