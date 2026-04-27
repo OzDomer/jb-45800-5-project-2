@@ -1,0 +1,478 @@
+/* ====================================================================
+   AI CARD — DOSSIER
+   Each card: title bar, identity, then a body that switches by status:
+     idle → consult CTA · loading → cylon scan · error → red panel
+     · success → verdict + case + lore
+   ==================================================================== */
+
+.AiCard {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    border-color var(--t-base) ease,
+    box-shadow   var(--t-base) ease;
+}
+/* corner brackets */
+.AiCard::before,
+.AiCard::after {
+  content: "";
+  position: absolute;
+  width: 10px; height: 10px;
+  border: 1px solid var(--border-strong);
+  pointer-events: none;
+  z-index: 2;
+}
+.AiCard::before { top: -1px; left: -1px;   border-right: none; border-bottom: none; }
+.AiCard::after  { bottom: -1px; right: -1px; border-left: none;  border-top: none; }
+
+/* loading state — accent border + breathing glow */
+.AiCard.is-loading {
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 1px var(--accent-border), 0 0 30px var(--accent-glow);
+  animation: aicard-loading 2.4s ease-in-out infinite;
+}
+@keyframes aicard-loading {
+  0%, 100% { box-shadow: 0 0 0 1px var(--accent-border), 0 0 24px var(--accent-glow); }
+  50%      { box-shadow: 0 0 0 1px var(--accent),        0 0 48px var(--accent-glow); }
+}
+
+/* verdict tints */
+.AiCard.is-verdict-buy {
+  border-color: var(--accent-border);
+  background:
+    radial-gradient(120% 100% at 0% 0%, var(--accent-bg) 0%, transparent 50%),
+    var(--bg-card);
+  box-shadow: 0 0 0 1px var(--accent-border), 0 0 28px var(--accent-glow);
+}
+.AiCard.is-verdict-buy::before,
+.AiCard.is-verdict-buy::after { border-color: var(--accent); }
+
+.AiCard.is-verdict-no {
+  border-color: var(--danger-border);
+  background:
+    radial-gradient(120% 100% at 0% 0%, var(--danger-bg) 0%, transparent 50%),
+    var(--bg-card);
+  box-shadow: 0 0 0 1px var(--danger-border);
+}
+.AiCard.is-verdict-no::before,
+.AiCard.is-verdict-no::after { border-color: var(--danger); }
+
+.AiCard.is-error {
+  border-color: var(--danger-border);
+}
+
+/* ---- title bar ---- */
+.AiCard-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.AiCard-bar-tag { color: var(--accent); font-weight: 700; }
+.AiCard-bar-tag span { color: var(--text-strong); }
+
+.AiCard-bar-id {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--text-mute);
+  justify-self: start;
+  min-width: 0;
+}
+.AiCard-bar-id-value {
+  color: var(--text-soft);
+  font-weight: 500;
+  text-transform: lowercase;
+  letter-spacing: 0;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.AiCard-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.AiCard-state.is-idle    { color: var(--text-mute); border-color: var(--border-strong); }
+.AiCard-state.is-loading { color: var(--accent);    border-color: var(--accent-border); background: var(--accent-bg); }
+.AiCard-state.is-error   { color: var(--danger);    border-color: var(--danger-border); background: var(--danger-bg); }
+.AiCard-state.is-buy     { color: var(--accent);    border-color: var(--accent-border); background: var(--accent-bg); }
+.AiCard-state.is-no      { color: var(--danger);    border-color: var(--danger-border); background: var(--danger-bg); }
+
+/* ---- identity ---- */
+.AiCard-id {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+}
+.AiCard-avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-input);
+  position: relative;
+}
+.AiCard-avatar::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 5px; height: 5px;
+  background: var(--accent);
+  opacity: 0.7;
+}
+.AiCard-avatar img { width: 32px; height: 32px; display: block; }
+.AiCard-avatar span {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text-soft);
+}
+.AiCard-id-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.AiCard-symbol {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--text-strong);
+  margin: 0;
+  line-height: 1.05;
+}
+.AiCard-name {
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-transform: capitalize;
+  margin: 0;
+  letter-spacing: 0;
+}
+
+/* ====================================================================
+   IDLE STATE
+   ==================================================================== */
+.AiCard-idle {
+  border-top: 1px dashed var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  background: linear-gradient(180deg,
+    var(--bg-input) 0%,
+    transparent 100%);
+}
+.AiCard-idle-prompt {
+  margin: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--text-soft);
+  font-size: var(--fs-sm);
+}
+.AiCard-idle-prompt .caps { color: var(--text-mute); }
+.AiCard-idle-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  background: var(--accent-bg-hard);
+  color: var(--accent-bright);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow: 0 0 18px var(--accent-glow);
+  transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.AiCard-idle-cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 28px var(--accent-glow);
+  transform: translateY(-1px);
+}
+:root[data-theme="light"] .AiCard-idle-cta:hover { color: var(--bg-card); }
+
+/* ====================================================================
+   CONSULTING STATE — cylon scanning bar
+   ==================================================================== */
+.AiCard-consulting {
+  border-top: 1px solid var(--accent-border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 6px,
+      var(--accent-bg) 6px 7px
+    );
+}
+.AiCard-consulting-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+.AiCard-consulting-bar {
+  position: relative;
+  height: 4px;
+  border: 1px solid var(--accent-border);
+  background: var(--bg-input);
+  overflow: hidden;
+}
+.AiCard-consulting-cylon {
+  position: absolute;
+  top: -1px; bottom: -1px;
+  width: 28%;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--accent) 50%,
+    transparent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  animation: cylon 1.6s ease-in-out infinite alternate;
+}
+@keyframes cylon {
+  from { left: -28%; }
+  to   { left:  100%; }
+}
+.AiCard-consulting-stream {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: var(--fs-2xs);
+  font-family: var(--font-mono);
+  color: var(--text-soft);
+  letter-spacing: 0.02em;
+}
+.AiCard-consulting-stream > span:first-child { color: var(--accent); font-weight: 700; }
+.AiCard-consulting-dots {
+  display: inline-flex;
+  gap: 1px;
+}
+.AiCard-consulting-dots > span {
+  color: var(--accent);
+  animation: dots 1.4s steps(1) infinite;
+}
+.AiCard-consulting-dots > span:nth-child(2) { animation-delay: 0.2s; }
+.AiCard-consulting-dots > span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dots {
+  0%, 100% { opacity: 1; }
+  60%      { opacity: 0; }
+}
+
+/* ====================================================================
+   ERROR STATE
+   ==================================================================== */
+.AiCard-error {
+  border-top: 1px solid var(--danger-border);
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  background: var(--danger-bg);
+}
+.AiCard-error-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 28px; height: 28px;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+.AiCard-error-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.AiCard-error-label { color: var(--danger); font-weight: 700; }
+.AiCard-error-msg {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: var(--fs-sm);
+  text-transform: lowercase;
+  letter-spacing: 0;
+}
+.AiCard-error-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--danger-border);
+  background: var(--bg-card);
+  color: var(--danger);
+  padding: 7px 14px;
+}
+.AiCard-error-retry:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+}
+
+/* ====================================================================
+   RESULT STATE — verdict + case + lore + footer
+   ==================================================================== */
+.AiCard-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px dashed var(--border);
+}
+
+/* ---- verdict ---- */
+.AiCard-verdict {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  /* phosphor scan-band underneath the verdict — purely decorative */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 12px,
+      currentColor 12px 13px
+    );
+  /* "currentColor" inherits the verdict color set on the parent .is-buy/.is-no */
+}
+.AiCard-verdict.is-buy { color: var(--accent); }
+.AiCard-verdict.is-no  { color: var(--danger); }
+.AiCard-verdict::after {
+  /* opaque overlay so the stripe pattern only shows as a subtle texture */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      var(--bg-card) 0%,
+      var(--bg-card) 100%);
+  opacity: 0.94;
+  z-index: 0;
+}
+.AiCard-verdict > * { position: relative; z-index: 1; }
+
+.AiCard-verdict-label {
+  color: var(--text-mute);
+  font-weight: 700;
+}
+.AiCard-verdict-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  border: 1px solid currentColor;
+  font-size: var(--fs-lg);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  background: var(--bg-card);
+  /* color comes from parent .is-buy/.is-no via currentColor */
+}
+.AiCard-verdict.is-buy .AiCard-verdict-call {
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* ---- case + lore ---- */
+.AiCard-section {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.AiCard-section--lore {
+  background: linear-gradient(180deg, var(--bg-input) 0%, transparent 100%);
+}
+.AiCard-section-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.AiCard-section-head .caps { color: var(--accent); font-weight: 700; }
+.AiCard-section-rule {
+  flex: 1;
+  height: 1px;
+  background-image:
+    radial-gradient(circle, var(--border-strong) 1px, transparent 1.5px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+.AiCard-section-body {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+.AiCard-section--lore .AiCard-section-body {
+  color: var(--text-soft);
+  font-style: italic;
+  letter-spacing: 0;
+}
+
+/* ---- footer ---- */
+.AiCard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 20px;
+  background: var(--bg-elevated);
+}
+.AiCard-foot-meta {
+  color: var(--text-mute);
+  font-weight: 500;
+  letter-spacing: var(--track-caps);
+}
+.AiCard-foot-rerun {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-soft);
+  padding: 5px 12px;
+}
+.AiCard-foot-rerun:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 540px) {
+  .AiCard-bar {
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+  }
+  .AiCard-bar-id { grid-column: 1 / -1; }
+  .AiCard-verdict { flex-direction: column; align-items: flex-start; }
+  .AiCard-section, .AiCard-foot, .AiCard-id, .AiCard-idle { padding-left: 14px; padding-right: 14px; }
+}

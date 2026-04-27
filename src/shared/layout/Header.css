@@ -1,0 +1,175 @@
+.Header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--bg) 86%, transparent);
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+}
+
+.Header-inner {
+  width: 100%;
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 0 var(--sp-5);
+  height: var(--header-h);
+}
+
+@media (max-width: 720px) {
+  .Header-inner { padding: 0 var(--sp-4); gap: var(--sp-2); }
+}
+
+/* ---- brand ---- */
+.Header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-strong);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+.Header-brand:hover { color: var(--text-strong); }
+.Header-brand-mark {
+  display: inline-block;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+  flex-shrink: 0;
+}
+.Header-brand-mark .bm-stroke { stroke: var(--accent); }
+.Header-brand-mark .bm-fill   { fill:   var(--accent); animation: bm-pulse 2.4s ease-in-out infinite; transform-origin: center; }
+.Header-brand-mark .bm-tick   { stroke: var(--accent-border); }
+@keyframes bm-pulse {
+  0%, 100% { opacity: 0.95; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.85); }
+}
+.Header-brand-name {
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-size: var(--fs-md);
+}
+.Header-brand-tag {
+  color: var(--text-mute);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+}
+@media (max-width: 880px) {
+  .Header-brand-tag { display: none; }
+}
+
+/* ---- nav ---- */
+.Header-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  justify-self: center;
+  flex-wrap: wrap;
+}
+
+.Header-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--text-soft);
+  text-decoration: none;
+  transition: color var(--t-fast) ease;
+}
+.Header-nav-bracket {
+  color: var(--text-faint);
+  transition: color var(--t-fast);
+  font-weight: 400;
+}
+.Header-nav-link:hover { color: var(--text-strong); }
+.Header-nav-link:hover .Header-nav-bracket { color: var(--accent); }
+
+.Header-nav-link.is-active { color: var(--accent); }
+.Header-nav-link.is-active .Header-nav-bracket { color: var(--accent); }
+.Header-nav-link.is-active::after {
+  content: "";
+  position: absolute;
+  inset: auto 8px -8px;
+  height: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ---- meta (status + theme) ---- */
+.Header-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  justify-self: end;
+}
+
+.Header-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 500;
+  border: 1px solid var(--accent-border);
+  padding: 4px 8px;
+  background: var(--accent-bg);
+}
+.Header-status svg { animation: bm-pulse 1.6s ease-in-out infinite; }
+
+.Header-theme {
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  font-size: 14px;
+  color: var(--text-soft);
+  border-color: var(--border-strong);
+  background: transparent;
+}
+.Header-theme:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.Header-theme-icon { line-height: 1; }
+
+/* ---- bottom rule (subtle) ---- */
+.Header-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border-strong) 8%,
+    var(--border-strong) 92%,
+    transparent 100%
+  );
+}
+
+/* mobile collapse */
+@media (max-width: 640px) {
+  .Header-inner {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    height: auto;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    row-gap: 4px;
+  }
+  .Header-nav {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+  .Header-nav-link { padding: 4px 6px; }
+}

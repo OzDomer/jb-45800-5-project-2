@@ -1,0 +1,306 @@
+/* ====================================================================
+   ORACLE / AI RECOMMENDATION PAGE
+   ==================================================================== */
+
+.AiRecommendation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ---- hero ---- */
+.Oracle-hero {
+  position: relative;
+  padding: var(--sp-4) 0 var(--sp-2);
+  max-width: 720px;
+}
+.Oracle-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: var(--sp-3);
+  font-weight: 500;
+}
+.Oracle-title { margin: 0 0 var(--sp-3); }
+.Oracle-title .slash {
+  background: none;
+  -webkit-text-fill-color: var(--accent);
+}
+.Oracle-tagline {
+  font-size: var(--fs-md);
+  line-height: var(--leading-base);
+  color: var(--text-soft);
+  max-width: 56ch;
+}
+.Oracle-tagline strong {
+  color: var(--text-strong);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  border-bottom: 1px dotted var(--accent-border);
+}
+
+/* ---- API key panel ---- */
+.Oracle-auth {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  position: relative;
+}
+.Oracle-auth-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.Oracle-auth-tag { color: var(--accent); font-weight: 700; }
+.Oracle-auth-tag span { color: var(--text-strong); }
+
+.Oracle-auth-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 1px solid;
+  font-weight: 700;
+}
+.Oracle-auth-dot {
+  width: 6px; height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  animation: pulse-dot 1.6s ease-in-out infinite;
+}
+.Oracle-auth-state.is-missing { color: var(--danger); border-color: var(--danger-border); background: var(--danger-bg); }
+.Oracle-auth-state.is-dirty   { color: var(--warn);   border-color: var(--warn);          background: rgba(245, 215, 110, 0.06); }
+.Oracle-auth-state.is-saved   { color: var(--accent); border-color: var(--accent-border); background: var(--accent-bg); }
+
+.Oracle-auth-form {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: stretch;
+}
+.Oracle-auth-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-mute);
+  pointer-events: none;
+  transition: color var(--t-fast);
+}
+.Oracle-auth-form:focus-within .Oracle-auth-prefix { color: var(--accent); }
+
+.Oracle-auth-input {
+  background: transparent;
+  border: none;
+  padding: 12px 12px 12px 40px;
+  color: var(--text-strong);
+  font-size: var(--fs-base);
+  letter-spacing: 0.05em;
+  font-family: var(--font-mono);
+  width: 100%;
+}
+.Oracle-auth-input:focus { outline: none; background: transparent; }
+.Oracle-auth-input::placeholder { color: var(--text-mute); }
+
+.Oracle-auth-reveal {
+  border: none;
+  border-left: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-mute);
+  padding: 0 12px;
+  display: inline-grid;
+  place-items: center;
+}
+.Oracle-auth-reveal:hover {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.Oracle-auth-save {
+  border: none;
+  border-left: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--accent);
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.Oracle-auth-save:hover:not(:disabled) {
+  background: var(--accent-bg-hard);
+  color: var(--accent-bright);
+}
+.Oracle-auth-save:disabled {
+  color: var(--text-mute);
+  cursor: not-allowed;
+}
+
+.Oracle-auth-clear {
+  border: none;
+  border-left: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-mute);
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: background var(--t-fast), color var(--t-fast), border-color var(--t-fast);
+}
+.Oracle-auth-clear:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+/* ---- bulk action bar ---- */
+.Oracle-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.Oracle-actions-text {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.Oracle-actions-label {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+.Oracle-actions-meta {
+  color: var(--text-mute);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+.Oracle-actions-bulk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  background: var(--accent-bg-hard);
+  color: var(--accent-bright);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow: 0 0 24px var(--accent-glow);
+  transition: background var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.Oracle-actions-bulk:hover:not(:disabled) {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 36px var(--accent-glow);
+  transform: translateY(-1px);
+}
+:root[data-theme="light"] .Oracle-actions-bulk:hover:not(:disabled) { color: var(--bg-card); }
+.Oracle-actions-bulk:disabled {
+  color: var(--text-mute);
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ---- empty state ---- */
+.Oracle-empty {
+  position: relative;
+  border: 1px dashed var(--border-strong);
+  padding: var(--sp-7) var(--sp-5);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: center;
+  background: var(--bg-card);
+}
+.Oracle-empty-tag {
+  color: var(--danger);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+}
+.Oracle-empty-title {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  letter-spacing: -0.01em;
+}
+.Oracle-empty-body {
+  color: var(--text-soft);
+  max-width: 56ch;
+  text-transform: lowercase;
+  letter-spacing: 0;
+}
+.Oracle-empty-body strong {
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--track-caps);
+}
+.Oracle-empty-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  margin-top: 6px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: background var(--t-fast), border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.Oracle-empty-cta:hover {
+  background: var(--accent-bg-hard);
+  border-color: var(--accent);
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* ---- card stack ---- */
+.Oracle-stack {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.Oracle-stack > li {
+  --delay: calc(60ms + var(--i, 0) * 80ms);
+  animation: oracle-card-in 380ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: var(--delay);
+}
+@keyframes oracle-card-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- responsive ---- */
+@media (max-width: 720px) {
+  .Oracle-actions { flex-direction: column; align-items: stretch; }
+  .Oracle-actions-bulk { justify-content: center; }
+}

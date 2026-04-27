@@ -1,0 +1,197 @@
+/* ====================================================================
+   NOT FOUND — segmentation fault terminal
+   ==================================================================== */
+
+.NotFound {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100svh - var(--header-h) - var(--footer-h) - var(--sp-7) - var(--sp-7));
+  padding: var(--sp-5) 0;
+}
+
+.NotFound-frame {
+  position: relative;
+  width: min(700px, 100%);
+  border: 1px solid var(--border-strong);
+  background: var(--bg-card);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  isolation: isolate;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--border), 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* faint scanline overlay only on the dark theme (var resolves to transparent on light) */
+.NotFound-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      transparent 0,  transparent 2px,
+      var(--scanline) 2px, var(--scanline) 3px);
+  background-size: 100% 3px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.NotFound-frame > * { position: relative; z-index: 1; }
+
+/* ---- 404 glitch text ---- */
+.NotFound-glitch {
+  position: relative;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(96px, 18vw, 168px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  text-shadow: 0 0 24px var(--accent-glow);
+  user-select: none;
+}
+.NotFound-glitch span {
+  position: relative;
+  display: block;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--accent) 0 2px,
+    transparent 2px 5px
+  );
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+}
+.NotFound-glitch::before,
+.NotFound-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font-weight: inherit;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+.NotFound-glitch::before {
+  color: var(--danger);
+  transform: translate(-2px, 0);
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  animation: glitch-a 3.6s steps(2) infinite;
+}
+.NotFound-glitch::after {
+  color: var(--info);
+  transform: translate(2px, 0);
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  animation: glitch-b 3.6s steps(2) infinite;
+}
+@keyframes glitch-a {
+  0%, 92%, 100% { transform: translate(-2px, 0); opacity: 0; }
+  93%, 95%      { transform: translate(-4px, -1px); opacity: 0.8; }
+}
+@keyframes glitch-b {
+  0%, 90%, 100% { transform: translate(2px, 0); opacity: 0; }
+  91%, 94%      { transform: translate(4px, 1px); opacity: 0.8; }
+}
+:root[data-theme="light"] .NotFound-glitch {
+  text-shadow: none;
+}
+
+/* ---- headline ---- */
+.NotFound-headline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--danger);
+  border-top: 1px solid var(--danger-border);
+  border-bottom: 1px solid var(--danger-border);
+  padding: 8px 0;
+  background:
+    linear-gradient(90deg,
+      var(--danger-bg) 0%,
+      transparent 60%);
+  font-weight: 700;
+  text-shadow: 0 0 8px rgba(255, 58, 94, 0.4);
+}
+:root[data-theme="light"] .NotFound-headline { text-shadow: none; }
+
+/* ---- stack trace ---- */
+.NotFound-trace {
+  margin: 0;
+  padding: 14px 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--text-soft);
+  letter-spacing: var(--track-mono);
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+.NotFound-trace::first-line {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---- actions ---- */
+.NotFound-actions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+.NotFound-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  background: var(--accent-bg-hard);
+  color: var(--accent-bright);
+  text-decoration: none;
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  box-shadow: 0 0 24px var(--accent-glow);
+  transition: background var(--t-fast), color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast);
+}
+.NotFound-cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+  box-shadow: 0 0 36px var(--accent-glow);
+  transform: translateY(-1px);
+}
+:root[data-theme="light"] .NotFound-cta:hover { color: var(--bg-card); }
+
+/* ---- prompt at the bottom ---- */
+.NotFound-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-mute);
+  border-top: 1px dashed var(--border);
+  padding-top: var(--sp-3);
+}
+.NotFound-prompt-user { color: var(--accent); font-weight: 500; }
+.NotFound-prompt-sep  { color: var(--text-mute); }
+.NotFound-prompt-path { color: var(--info); }
+.NotFound-prompt-sigil {
+  margin: 0 6px 0 2px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.NotFound-prompt-caret {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: var(--accent);
+  animation: nf-caret 1.05s steps(2) infinite;
+}
+@keyframes nf-caret {
+  0%, 50%   { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

@@ -1,0 +1,250 @@
+/* ====================================================================
+   MORE INFO — terminal panel that reveals with a scanline sweep,
+   then cascades each row in left-to-right and decodes the digits.
+   ==================================================================== */
+
+.MoreInfo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  border-top: 1px dashed var(--accent-border);
+  background:
+    linear-gradient(180deg,
+      var(--accent-bg) 0%,
+      transparent 60%),
+    var(--bg-input);
+  overflow: hidden;
+  isolation: isolate;
+  /* container fade-in so the scanline lands on something */
+  animation: MoreInfo-mount 320ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+@keyframes MoreInfo-mount {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* corner ticks for the panel */
+.MoreInfo::before,
+.MoreInfo::after {
+  content: "";
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 1px solid var(--accent-border);
+  pointer-events: none;
+}
+.MoreInfo::before { top: 4px;    left: 4px;  border-right: none; border-bottom: none; }
+.MoreInfo::after  { bottom: 4px; right: 4px; border-left: none;  border-top: none; }
+
+/* ---- one-shot scanline sweep on mount ---- */
+.MoreInfo-scanline {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 40%;
+  background:
+    linear-gradient(180deg,
+      transparent 0%,
+      var(--accent-glow) 35%,
+      var(--accent) 50%,
+      var(--accent-glow) 65%,
+      transparent 100%);
+  opacity: 0.45;
+  pointer-events: none;
+  filter: blur(2px);
+  z-index: 0;
+  animation: MoreInfo-scan 900ms cubic-bezier(0.4, 0.0, 0.6, 1) forwards;
+}
+@keyframes MoreInfo-scan {
+  0%   { transform: translateY(-100%); opacity: 0;    }
+  18%  { opacity: 0.55; }
+  80%  { opacity: 0.30; }
+  100% { transform: translateY(280%); opacity: 0; }
+}
+
+/* ---- header strip ---- */
+.MoreInfo-head {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+
+.MoreInfo-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 7px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 700;
+}
+.MoreInfo-state.is-loading { color: var(--warn); border-color: var(--warn); background: rgba(245, 215, 110, 0.06); }
+.MoreInfo-spin { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.MoreInfo-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-mute);
+  font-variant-numeric: tabular-nums;
+}
+.MoreInfo-meta-dot { color: var(--text-faint); }
+.MoreInfo-z { color: var(--accent); margin-left: 1px; }
+
+/* ---- rows ---- */
+.MoreInfo-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border-mute); /* gives 1px separators between rows */
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;
+}
+
+.MoreInfo-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  background: var(--bg-card);
+  font-size: var(--fs-xs);
+  position: relative;
+  /* cascade reveal: each row clips-in left-to-right with stagger */
+  --delay: calc(140ms + var(--i) * 110ms);
+  animation:
+    MoreInfo-row-clip 460ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards,
+    MoreInfo-row-fade 260ms ease backwards;
+  animation-delay: var(--delay);
+}
+@keyframes MoreInfo-row-clip {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0     0 0); }
+}
+@keyframes MoreInfo-row-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ---- CODE/SYM lockup (left of row) ---- */
+.MoreInfo-row-pair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-variant-numeric: tabular-nums;
+}
+.MoreInfo-row-code {
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+}
+.MoreInfo-row-slash {
+  margin: 0 1px;
+  color: var(--text-faint);
+  font-weight: 400;
+  font-size: var(--fs-2xs);
+}
+.MoreInfo-row-sym {
+  color: var(--text-mute);
+  font-weight: 500;
+  font-size: var(--fs-xs);
+  /* fallback to a font with reliable currency-symbol coverage,
+     keeps the shekel from breaking the lockup. */
+  font-family:
+    "JetBrains Mono",
+    "SF Pro Text", "Helvetica Neue", "Segoe UI",
+    ui-sans-serif, sans-serif;
+  letter-spacing: 0;
+  min-width: 1ch;
+  display: inline-block;
+  text-align: center;
+}
+
+/* dotted separator filling the middle space — looks like a price-list rule */
+.MoreInfo-row-bar {
+  display: block;
+  height: 1px;
+  background-image:
+    radial-gradient(circle, var(--border-strong) 1px, transparent 1.5px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+
+/* ---- right-aligned value ---- */
+.MoreInfo-row-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text-strong);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  font-size: var(--fs-base);
+}
+
+.MoreInfo-decoded-num    {
+  display: inline-block;
+  min-width: 5ch;
+  text-align: right;
+}
+
+/* skeleton digits during load */
+.MoreInfo-skel {
+  display: inline-flex;
+  gap: 3px;
+}
+.MoreInfo-skel > span {
+  display: block;
+  width: 8px; height: 10px;
+  background: var(--accent-border);
+  animation: MoreInfo-skel-blink 1.05s steps(2) infinite;
+}
+.MoreInfo-skel > span:nth-child(2) { animation-delay: 0.10s; }
+.MoreInfo-skel > span:nth-child(3) { animation-delay: 0.20s; }
+.MoreInfo-skel > span:nth-child(4) { animation-delay: 0.30s; }
+.MoreInfo-skel > span:nth-child(5) { animation-delay: 0.40s; }
+.MoreInfo-skel > span:nth-child(6) { animation-delay: 0.50s; }
+@keyframes MoreInfo-skel-blink {
+  0%, 50%   { opacity: 1; }
+  51%, 100% { opacity: 0.25; }
+}
+
+/* ---- footer caption ---- */
+.MoreInfo-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-2xs);
+  color: var(--text-mute);
+  padding-top: 2px;
+}
+.MoreInfo-foot-dim   { color: var(--text-faint); }
+.MoreInfo-foot-path  { color: var(--accent); font-weight: 500; }
+.MoreInfo-foot-spacer{ flex: 1;
+  border-bottom: 1px dotted var(--border-strong);
+  margin: 0 4px;
+  height: 1px;
+  align-self: center;
+}
+
+/* respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .MoreInfo,
+  .MoreInfo-row { animation: none !important; clip-path: none !important; }
+  .MoreInfo-scanline { display: none; }
+  .MoreInfo-spin { animation: none; }
+}

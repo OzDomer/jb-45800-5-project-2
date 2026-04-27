@@ -1,0 +1,366 @@
+/* ====================================================================
+   COIN PICKER MODAL — terminal "DIALOG.SYS" for watchlist overflow.
+   ==================================================================== */
+
+.CoinPicker {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+
+/* ---- title bar ---- */
+.CoinPicker-titlebar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.CoinPicker-titlebar-tag {
+  color: var(--accent);
+  font-weight: 700;
+}
+.CoinPicker-titlebar-meta {
+  color: var(--text-mute);
+  text-align: center;
+}
+.CoinPicker-titlebar-close {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-soft);
+}
+.CoinPicker-titlebar-close:hover {
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+}
+
+/* ---- warning header ---- */
+.CoinPicker-warn {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+  background:
+    linear-gradient(180deg,
+      rgba(245, 215, 110, 0.06) 0%,
+      transparent 100%);
+  border-bottom: 1px dashed var(--border);
+}
+.CoinPicker-warn-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 32px; height: 32px;
+  border: 1px solid var(--warn);
+  color: var(--warn);
+  background: rgba(245, 215, 110, 0.06);
+  flex-shrink: 0;
+}
+.CoinPicker-warn-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.CoinPicker-warn-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--text-strong);
+  margin: 0;
+  line-height: 1.1;
+}
+.CoinPicker-warn-body {
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+  margin: 0;
+  text-transform: lowercase;
+  letter-spacing: 0;
+}
+.CoinPicker-warn-body strong {
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--track-caps);
+}
+
+/* ---- sections (queued / current) ---- */
+.CoinPicker-section {
+  padding: 14px 18px;
+}
+.CoinPicker-section + .CoinPicker-section {
+  border-top: 1px solid var(--border);
+}
+
+.CoinPicker-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.CoinPicker-section-label {
+  flex-shrink: 0;
+  color: var(--text-mute);
+}
+.CoinPicker-section-rule {
+  flex: 1 1 auto;
+  height: 1px;
+  background-image:
+    radial-gradient(circle, var(--border-strong) 1px, transparent 1.5px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+  background-position: 0 50%;
+}
+.CoinPicker-section-count {
+  flex-shrink: 0;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- shared row layout ---- */
+.CoinPicker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.CoinPicker-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  cursor: default;
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast);
+}
+.CoinPicker-row.is-muted { opacity: 0.85; }
+
+/* row body (avatar + text). Used inside both add and evict rows. */
+.CoinPicker-row-body {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+.CoinPicker-row-avatar {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-elevated);
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  color: var(--text-soft);
+}
+.CoinPicker-row-avatar img { width: 18px; height: 18px; display: block; }
+.CoinPicker-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+}
+.CoinPicker-row-symbol {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  color: var(--text-strong);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.CoinPicker-row-name {
+  font-size: var(--fs-2xs);
+  color: var(--text-mute);
+  text-transform: capitalize;
+  letter-spacing: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- add row callout ---- */
+.CoinPicker-add .CoinPicker-row {
+  border-color: var(--accent-border);
+  background:
+    linear-gradient(90deg,
+      var(--accent-bg) 0%,
+      transparent 60%),
+    var(--bg-input);
+}
+.CoinPicker-add-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--accent-border);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* ---- evict row (selectable) ---- */
+.CoinPicker-row--evict {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  grid-template-columns: 14px 1fr auto;
+  /* hide native checkbox visually but keep accessible/clickable */
+}
+.CoinPicker-row-checkbox {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0; height: 0;
+}
+.CoinPicker-row-checkmark {
+  display: grid;
+  place-items: center;
+  width: 14px; height: 14px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: transparent;
+  transition: all var(--t-fast);
+}
+.CoinPicker-row--evict:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+.CoinPicker-row--evict:hover .CoinPicker-row-checkmark {
+  border-color: var(--accent);
+}
+
+.CoinPicker-row--evict.is-selected {
+  border-color: var(--danger-border);
+  background:
+    linear-gradient(90deg,
+      var(--danger-bg) 0%,
+      transparent 60%),
+    var(--bg-input);
+}
+.CoinPicker-row--evict.is-selected .CoinPicker-row-checkmark {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: var(--bg);
+}
+:root[data-theme="light"] .CoinPicker-row--evict.is-selected .CoinPicker-row-checkmark {
+  color: var(--bg-card);
+}
+
+.CoinPicker-evict-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text-mute);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.CoinPicker-row--evict.is-selected .CoinPicker-evict-pill {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.CoinPicker-evict-pill-keep { letter-spacing: var(--track-caps); }
+
+/* keyboard focus ring */
+.CoinPicker-row-checkbox:focus-visible + .CoinPicker-row-checkmark {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* ---- footer ---- */
+.CoinPicker-foot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
+}
+.CoinPicker-foot-cancel,
+.CoinPicker-foot-confirm {
+  padding: 12px 14px;
+  border: none;
+  background: var(--bg-elevated);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+}
+.CoinPicker-foot-cancel {
+  color: var(--text-soft);
+}
+.CoinPicker-foot-cancel:hover {
+  color: var(--text-strong);
+  background: var(--bg-card);
+}
+
+.CoinPicker-foot-confirm {
+  color: var(--accent);
+  background: var(--accent-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.CoinPicker-foot-confirm:hover:not(:disabled) {
+  background: var(--accent-bg-hard);
+  color: var(--accent-bright);
+}
+.CoinPicker-foot-confirm:disabled {
+  color: var(--text-mute);
+  background: var(--bg-elevated);
+  cursor: not-allowed;
+}
+.CoinPicker-foot-confirm-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid currentColor;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+}
+.CoinPicker-foot-confirm:disabled .CoinPicker-foot-confirm-count {
+  border-color: var(--border-strong);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 480px) {
+  .CoinPicker-warn        { padding: 14px; }
+  .CoinPicker-section     { padding: 12px 14px; }
+  .CoinPicker-row         { padding: 8px; gap: 8px; }
+  .CoinPicker-foot-confirm-count { display: none; }
+}

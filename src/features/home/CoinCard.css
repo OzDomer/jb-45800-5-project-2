@@ -1,0 +1,347 @@
+/* ====================================================================
+   COIN CARD
+   ==================================================================== */
+
+@counter-style cn-three {
+  system: numeric;
+  symbols: "0" "1" "2" "3" "4" "5" "6" "7" "8" "9";
+  pad: 3 "0";
+}
+
+.CoinCard {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto auto auto auto auto;
+  gap: var(--sp-3);
+  padding: 14px 14px 12px;
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    border-color var(--t-base) ease,
+    box-shadow   var(--t-base) ease,
+    transform    var(--t-fast) ease;
+}
+
+/* corner ticks: tiny brackets in each corner of every card.
+   Drawn with a single ::before/::after via inset gradients. */
+.CoinCard::before,
+.CoinCard::after {
+  content: "";
+  position: absolute;
+  width: 9px; height: 9px;
+  border: 1px solid var(--border-strong);
+  pointer-events: none;
+  z-index: 1;
+}
+.CoinCard::before { top: -1px; left:  -1px; border-right: none;  border-bottom: none; }
+.CoinCard::after  { top: -1px; right: -1px; border-left:  none;  border-bottom: none; }
+
+.CoinCard:hover {
+  border-color: var(--accent-border);
+  box-shadow:
+    0 0 0 1px var(--accent-border),
+    0 0 24px var(--accent-glow);
+  transform: translateY(-1px);
+}
+
+/* ACTIVE state — coin is in watchlist */
+.CoinCard.is-active {
+  border-color: var(--accent-border);
+  background:
+    radial-gradient(120% 100% at 0% 0%,
+      var(--accent-bg) 0%, transparent 60%),
+    var(--bg-card);
+  box-shadow: 0 0 0 1px var(--accent-border), 0 0 24px var(--accent-glow);
+}
+.CoinCard.is-active::before,
+.CoinCard.is-active::after {
+  border-color: var(--accent);
+}
+
+/* ---- head: rank + delta ---- */
+.CoinCard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.CoinCard-rank {
+  color: var(--text-faint);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  font-weight: 500;
+}
+.CoinCard-rank::after {
+  content: counter(card-rank, cn-three);
+  margin-left: 1px;
+  color: var(--text-mute);
+  font-weight: 700;
+}
+
+/* ---- delta pill (the up/down meaning lives here) ---- */
+.CoinCard-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  font-weight: 700;
+  border: 1px solid;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  background: var(--bg-elevated);
+  position: relative;
+}
+.CoinCard-delta-glyph { font-size: 9px; line-height: 1; }
+.CoinCard-delta-value { letter-spacing: 0.06em; }
+
+.CoinCard-delta.is-up {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+.CoinCard-delta.is-down {
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+}
+.CoinCard-delta.is-flat {
+  color: var(--text-soft);
+  border-color: var(--border-strong);
+}
+.CoinCard-delta.is-down svg { animation: delta-jitter-down 2.4s ease-in-out infinite; }
+.CoinCard-delta.is-up   svg { animation: delta-jitter-up   2.4s ease-in-out infinite; }
+
+@keyframes delta-jitter-up {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1px); }
+}
+@keyframes delta-jitter-down {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(1px); }
+}
+
+/* ---- identity row: avatar + symbol + name ---- */
+.CoinCard-id {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.CoinCard-avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-input);
+  position: relative;
+}
+.CoinCard-avatar::before {
+  /* tiny notch in the top-left of the avatar — terminal "id badge" feel */
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 4px;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.CoinCard.is-active .CoinCard-avatar { border-color: var(--accent-border); }
+.CoinCard-avatar img {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+:root[data-theme="dark"] .CoinCard-avatar img {
+  /* coingecko icons can be too bright on near-black; minor desat */
+  filter: saturate(0.95);
+}
+.CoinCard-avatar-fallback {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--text-soft);
+  letter-spacing: 0.02em;
+}
+
+.CoinCard-id-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.CoinCard-symbol {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  letter-spacing: var(--track-caps);
+  color: var(--text-strong);
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.CoinCard-name {
+  font-size: var(--fs-xs);
+  color: var(--text-mute);
+  text-transform: capitalize;
+  margin: 0;
+  letter-spacing: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* ---- price block (focal element) ---- */
+.CoinCard-price {
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.CoinCard-price-label {
+  color: var(--text-mute);
+  font-size: 9px;
+}
+.CoinCard-price-value {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-strong);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.CoinCard.is-up   .CoinCard-price-value { color: var(--text-strong); }
+.CoinCard.is-down .CoinCard-price-value { color: var(--text-strong); }
+
+/* directional left-edge bar — adds non-color signal */
+.CoinCard-price-bar {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 3px;
+}
+.CoinCard-price-bar.is-up   { background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+.CoinCard-price-bar.is-down { background: var(--danger); }
+.CoinCard-price-bar.is-flat { background: var(--border-strong); }
+
+/* ---- inspect button ---- */
+.CoinCard-inspect {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-soft);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+}
+.CoinCard-inspect:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+.CoinCard-inspect-chev { transition: transform var(--t-base) ease; }
+.CoinCard.is-expanded .CoinCard-inspect-chev { transform: rotate(180deg); }
+.CoinCard.is-expanded .CoinCard-inspect {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-bg);
+}
+
+/* ---- expanded slot (MoreInfo lives here) ---- */
+.CoinCard-expanded {
+  margin: 4px -14px 0;
+  padding: 0;
+  background: transparent;
+  /* MoreInfo owns its own visual treatment + animation */
+}
+
+/* ---- footer: track switch ---- */
+.CoinCard-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  margin: 0 -14px -12px;
+  padding: 10px 14px;
+  background: var(--bg-elevated);
+}
+.CoinCard.is-active .CoinCard-foot {
+  background: var(--accent-bg);
+  border-top-color: var(--accent-border);
+}
+
+/* ====================================================================
+   TERMINAL SWITCH — used inside CoinCard.foot, but generic.
+   ==================================================================== */
+.TerminalSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-mute);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-caps);
+  text-transform: uppercase;
+  font-weight: 700;
+  cursor: pointer;
+}
+.TerminalSwitch:hover { color: var(--text-strong); }
+.TerminalSwitch-track {
+  position: relative;
+  width: 30px;
+  height: 14px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  display: inline-block;
+  padding: 1px;
+  transition: border-color var(--t-fast) ease, background var(--t-fast) ease;
+}
+.TerminalSwitch-thumb {
+  display: block;
+  width: 10px;
+  height: 10px;
+  background: var(--text-mute);
+  transition: transform var(--t-base) ease, background var(--t-base) ease;
+}
+.TerminalSwitch.is-on {
+  color: var(--accent);
+}
+.TerminalSwitch.is-on .TerminalSwitch-track {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.TerminalSwitch.is-on .TerminalSwitch-thumb {
+  transform: translateX(16px);
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+.TerminalSwitch:focus-visible {
+  outline: none;
+}
+.TerminalSwitch:focus-visible .TerminalSwitch-track {
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 480px) {
+  .CoinCard {
+    padding: 12px 12px 10px;
+  }
+  .CoinCard-foot { margin: 0 -12px -10px; padding: 8px 12px; }
+  .CoinCard-expanded { margin: -4px -12px 0; padding: 8px 12px 4px; }
+}

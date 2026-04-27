@@ -1,0 +1,175 @@
+/* =========================================================
+   CRYPTONITE / TERMINAL PALETTE
+   Dual-theme tokens. Theme is set via [data-theme] on <html>.
+   Dark = late-night phosphor green. Light = compliance-grade emerald.
+   ========================================================= */
+
+:root,
+:root[data-theme="dark"] {
+  /* surfaces */
+  --bg:              #050807;
+  --bg-elevated:     #0a0f0d;
+  --bg-card:         #0a100e;
+  --bg-input:        #03060500;
+  --bg-overlay:      rgba(0, 8, 4, 0.78);
+
+  /* text */
+  --text:            #6f8479;
+  --text-strong:     #d4eadc;
+  --text-soft:       #8ea59a;
+  --text-mute:       #455048;
+  --text-faint:      #2a332e;
+
+  /* accent (terminal phosphor green) */
+  --accent:          #21f088;
+  --accent-bright:   #5dffaa;
+  --accent-dim:      #15a55c;
+  --accent-bg:       rgba(33, 240, 136, 0.07);
+  --accent-bg-hard:  rgba(33, 240, 136, 0.18);
+  --accent-border:   rgba(33, 240, 136, 0.35);
+  --accent-glow:     rgba(33, 240, 136, 0.45);
+
+  /* semantic */
+  --danger:          #ff3a5e;
+  --danger-bg:       rgba(255, 58, 94, 0.08);
+  --danger-border:   rgba(255, 58, 94, 0.45);
+  --info:            #4ee2ec;
+  --info-bg:         rgba(78, 226, 236, 0.08);
+  --warn:            #f5d76e;
+
+  /* lines & dividers */
+  --border:          rgba(33, 240, 136, 0.13);
+  --border-strong:   rgba(33, 240, 136, 0.35);
+  --border-mute:     rgba(120, 160, 140, 0.10);
+
+  /* texture (grid + scanlines for the dark theme) */
+  --grid-line:       rgba(33, 240, 136, 0.045);
+  --grid-line-major: rgba(33, 240, 136, 0.08);
+  --scanline:        rgba(33, 240, 136, 0.035);
+  --noise-opacity:   0.04;
+
+  /* shadow / glow */
+  --shadow-soft:     0 0 0 1px var(--border), 0 8px 24px rgba(0,0,0,0.55);
+  --shadow-card:     0 0 0 1px var(--border), 0 0 30px rgba(33,240,136,0.06);
+  --shadow-glow:     0 0 18px var(--accent-glow), 0 0 1px var(--accent);
+
+  /* chart series palette — 5 distinct hues that hold up against near-black */
+  --chart-1:         #21f088;  /* phosphor green   — primary accent */
+  --chart-2:         #4ee2ec;  /* cyan */
+  --chart-3:         #f5d76e;  /* amber */
+  --chart-4:         #c084fc;  /* lavender */
+  --chart-5:         #ff7a45;  /* coral */
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  /* surfaces — warm cream / parchment */
+  --bg:              #ece2c8;  /* warm cream, like good résumé paper */
+  --bg-elevated:     #ddd0b0;  /* deeper beige (footer pills, kbd) */
+  --bg-card:         #f6eed5;  /* lighter cream — cards lift off page */
+  --bg-input:        #d8caa6;  /* recessed input wells */
+  --bg-overlay:      rgba(48, 36, 18, 0.50);
+
+  /* text — warm ink, not cool grey */
+  --text:            #463f30;
+  --text-strong:     #1a1410;
+  --text-soft:       #5e5644;
+  --text-mute:       #877e64;
+  --text-faint:      #b3a988;
+
+  /* accent — deep emerald, holds up against cream */
+  --accent:          #04663a;
+  --accent-bright:   #088549;
+  --accent-dim:      #034a2a;
+  --accent-bg:       rgba(4, 102, 58, 0.07);
+  --accent-bg-hard:  rgba(4, 102, 58, 0.16);
+  --accent-border:   rgba(4, 102, 58, 0.30);
+  --accent-glow:     rgba(4, 102, 58, 0.20);
+
+  /* semantic — saturated to match the warmer surface */
+  --danger:          #a31624;
+  --danger-bg:       rgba(163, 22, 36, 0.07);
+  --danger-border:   rgba(163, 22, 36, 0.32);
+  --info:            #155f7a;
+  --info-bg:         rgba(21, 95, 122, 0.06);
+  --warn:            #8a5d00;
+
+  /* lines — warm sepia */
+  --border:          rgba(40, 28, 12, 0.16);
+  --border-strong:   rgba(40, 28, 12, 0.34);
+  --border-mute:     rgba(40, 28, 12, 0.08);
+
+  /* texture — sepia grid, no scanlines */
+  --grid-line:       rgba(60, 45, 20, 0.05);
+  --grid-line-major: rgba(60, 45, 20, 0.09);
+  --scanline:        transparent;
+  --noise-opacity:   0.04;
+
+  /* shadow */
+  --shadow-soft:     0 1px 0 var(--border), 0 10px 24px rgba(60, 40, 15, 0.10);
+  --shadow-card:     0 0 0 1px var(--border), 0 1px 0 var(--border);
+  --shadow-glow:     0 0 0 1px var(--accent-border);
+
+  /* chart palette — deeper hues that read on parchment */
+  --chart-1:         #04663a;  /* deep emerald — primary accent */
+  --chart-2:         #155f7a;  /* steel cyan */
+  --chart-3:         #8a5d00;  /* burnt amber */
+  --chart-4:         #6d3aa6;  /* deep violet */
+  --chart-5:         #b04a23;  /* rust */
+
+  color-scheme: light;
+}
+
+/* =========================================================
+   TYPOGRAPHY + SIZING TOKENS (theme-independent)
+   ========================================================= */
+:root {
+  --font-mono:
+    "JetBrains Mono", "JetBrainsMono Nerd Font",
+    ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
+
+  /* density-leaning sizes */
+  --fs-2xs:    10px;
+  --fs-xs:     11px;
+  --fs-sm:     12px;
+  --fs-base:   13px;
+  --fs-md:     15px;
+  --fs-lg:     18px;
+  --fs-xl:     22px;
+  --fs-2xl:    32px;
+  --fs-display:64px;
+
+  --leading-tight: 1.15;
+  --leading-base:  1.45;
+  --leading-loose: 1.6;
+
+  --track-tight:    0;
+  --track-caps:     0.14em;
+  --track-mono:     0.02em;
+
+  /* spacing scale — multiples of 4 */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
+  --sp-8:  64px;
+
+  /* radii — sharp by design */
+  --r-0: 0px;
+  --r-1: 2px;
+  --r-2: 4px;
+
+  /* timings */
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --t-slow: 380ms;
+
+  /* layout */
+  --container-max: 1240px;
+  --header-h:      56px;
+  --footer-h:      40px;
+}
