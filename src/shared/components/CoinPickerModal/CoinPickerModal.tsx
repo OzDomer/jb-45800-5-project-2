@@ -20,9 +20,11 @@ export default function CoinPickerModal({
     const [selected, setSelected] = useState<string[]>([])
 
     function toggle(coinId: string) {
-        selected.includes(coinId)
-            ? setSelected(selected.filter(id => id !== coinId))
-            : setSelected([...selected, coinId])
+        setSelected(current =>
+            current.includes(coinId)
+            ? current.filter(id => id !== coinId)
+            : [...current, coinId]
+        )
     }
     function handleConfirm() {
         onConfirm(selected)

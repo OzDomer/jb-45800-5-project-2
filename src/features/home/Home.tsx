@@ -30,9 +30,9 @@ export default function Home() {
             })()
         }
     }
-        , [])
+        , [coins, dispatch])
     function handleMoreInfoClick(coinId: string) {
-        coinId === openCoinId ? setOpenCoinId(null) : setOpenCoinId(coinId)
+        setOpenCoinId(current => current === coinId ? null : coinId)
     }
     const filtered = coins.filter(coin => {
         const term = searchTerm.toLowerCase()
@@ -53,8 +53,8 @@ export default function Home() {
     }
 
     const isLoading = coins.length === 0
-    const gainers   = coins.filter(c => c.price_change_percentage_24h > 0).length
-    const losers    = coins.filter(c => c.price_change_percentage_24h < 0).length
+    const gainers = coins.filter(c => c.price_change_percentage_24h > 0).length
+    const losers = coins.filter(c => c.price_change_percentage_24h < 0).length
     const noMatches = !isLoading && filtered.length === 0
 
     return (
@@ -75,11 +75,11 @@ export default function Home() {
             </header>
 
             <section className="Home-stats" aria-label="market stats">
-                <Stat label="listed"   value={pad(coins.length, 3)} />
-                <Stat label="matches"  value={pad(filtered.length, 3)} />
-                <Stat label="tracking" value={`${userCoins.length}/5`}  accent />
-                <Stat label="gainers"  value={pad(gainers, 3)} tone="up" />
-                <Stat label="losers"   value={pad(losers, 3)}  tone="down" />
+                <Stat label="listed" value={pad(coins.length, 3)} />
+                <Stat label="matches" value={pad(filtered.length, 3)} />
+                <Stat label="tracking" value={`${userCoins.length}/5`} accent />
+                <Stat label="gainers" value={pad(gainers, 3)} tone="up" />
+                <Stat label="losers" value={pad(losers, 3)} tone="down" />
             </section>
 
             <div className="Home-toolbar">
@@ -168,9 +168,9 @@ interface StatProps {
 function Stat({ label, value, tone, accent }: StatProps) {
     const cls = [
         "Home-stat",
-        tone === "up"   && "is-up",
+        tone === "up" && "is-up",
         tone === "down" && "is-down",
-        accent          && "is-accent",
+        accent && "is-accent",
     ].filter(Boolean).join(" ")
     return (
         <div className={cls}>
@@ -184,7 +184,7 @@ function BootingScreen() {
     return (
         <div className="Home-booting" role="status" aria-live="polite">
             <pre className="Home-booting-log">
-{`> establishing connection to coingecko_v3 ...    [ ok ]
+                {`> establishing connection to coingecko_v3 ...    [ ok ]
 > requesting GET /coins/markets?vs_currency=usd  [ ok ]
 > hydrating store · 100 records                   [ .. ]
 > populating watchlist memory                     [ -- ]
