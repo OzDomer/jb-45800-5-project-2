@@ -38,7 +38,7 @@ export default function CoinPickerModal({
     const evictCount = selected.length
 
     return (
-        <Modal isOpen={true} onClose={handleCancel}>
+        <Modal isOpen={true} onClose={handleCancel} closeOnBackdrop={false}>
             <div className="CoinPicker">
                 {/* ----- title bar ----- */}
                 <header className="CoinPicker-titlebar">
