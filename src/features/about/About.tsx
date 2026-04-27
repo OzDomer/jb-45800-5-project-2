@@ -148,7 +148,7 @@ export default function About() {
                     <span>↩ back to market</span>
                 </Link>
                 <a
-                    href="https://github.com"
+                    href="https://github.com/OzDomer/jb-45800-5-project-2"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="About-foot-link"
