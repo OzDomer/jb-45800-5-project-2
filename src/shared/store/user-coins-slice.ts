@@ -21,6 +21,7 @@ const userCoinsSlice = createSlice({
             if (state.userCoins.some(coin => coin.coinId === action.payload.coinId)) {
                 return
             }
+            if (state.userCoins.length >= 5) return
             state.userCoins.push(action.payload)
         },
         removeCoin: (state, action: PayloadAction<string>) => {

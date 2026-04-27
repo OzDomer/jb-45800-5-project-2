@@ -4,14 +4,13 @@ import Modal from "../Modal/Modal"
 import "./CoinPickerModal.css"
 
 interface CoinPickerModalProps {
-    isOpen: boolean
     onClose: () => void
     onConfirm: (selectedIds: string[]) => void
     coinsToChooseFrom: SelectedCoin[]
     pendingCoin: SelectedCoin
 }
 
-export default function CoinPickerModal({ isOpen, onClose, onConfirm, coinsToChooseFrom, pendingCoin }: CoinPickerModalProps) {
+export default function CoinPickerModal({ onClose, onConfirm, coinsToChooseFrom, pendingCoin }: CoinPickerModalProps) {
     const [selected, setSelected] = useState<string[]>([])
 
     function toggle(coinId: string) {
@@ -30,7 +29,7 @@ export default function CoinPickerModal({ isOpen, onClose, onConfirm, coinsToCho
     }
 
     return (
-            <Modal isOpen={isOpen} onClose={handleCancel}>
+            <Modal isOpen={true} onClose={handleCancel}>
                 <h3>Watchlist full — pick coin(s) to remove to add {pendingCoin.name}</h3>
                 {coinsToChooseFrom.map(coin => <label key={coin.coinId}><input type="checkbox" checked={selected.includes(coin.coinId)} onChange={() => toggle(coin.coinId)}/>{coin.name}</label>)}
                 <button onClick={handleCancel}>Cancel</button>

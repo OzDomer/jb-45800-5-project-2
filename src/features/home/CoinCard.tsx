@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
-import { addCoin, removeCoin } from "../../shared/store/user-coins-slice"
+import { addCoin, removeCoin, type SelectedCoin } from "../../shared/store/user-coins-slice"
 import "./CoinCard.css"
 import type Coin from "../../shared/models/Coin"
 import MoreInfo from "./MoreInfo"
@@ -8,15 +8,20 @@ interface CoinCardProps {
     coinCard: Coin,
     isOpen: boolean
     onMoreInfoClick: () => void
+    onLimitReached: (coin: SelectedCoin) => void
 }
 
-export default function CoinCard({ coinCard, isOpen, onMoreInfoClick }: CoinCardProps) {
+export default function CoinCard({ coinCard, isOpen, onMoreInfoClick, onLimitReached }: CoinCardProps) {
     const { id, symbol, name, image, price_change_percentage_24h } = coinCard
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
     const isInWatchlist = userCoins.some(coin => coin.coinId === id)
     const dispatch = useAppDispatch()
     function addCoinToWatchlist() {
-        dispatch(addCoin({ coinId: id, coinSymbol: symbol.toUpperCase(), name, image }))
+        if (userCoins.length >= 5){
+       onLimitReached({coinId: id, coinSymbol: symbol.toUpperCase(), name, image})
+        }else{
+             dispatch(addCoin({ coinId: id, coinSymbol: symbol.toUpperCase(), name, image }))
+        }
     }
     function removeCoinFromWatchlist(coinId: string) {
         dispatch(removeCoin(coinId))
