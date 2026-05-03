@@ -4,7 +4,7 @@ import {
     LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
     ResponsiveContainer,
 } from "recharts"
-import { ArrowRight, TrendingUp, TrendingDown, Minus, Radio } from "lucide-react"
+import { ArrowRight, TrendingUp, TrendingDown, Minus, Radio, AlertTriangle } from "lucide-react"
 import { useAppSelector } from "../../shared/store/hooks"
 import cryptoCompareService from "../../shared/services/CryptoCompareService"
 import "./Reports.css"
@@ -19,25 +19,31 @@ const CHART_VARS = [
     "var(--chart-5)",
 ]
 const SAMPLE_INTERVAL_MS = 1_000
-const WINDOW_SIZE        = 600
+const WINDOW_SIZE = 600
 
 export default function Reports() {
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
     const [arrayForGraph, setArrayForGraph] = useState<Sample[]>([])
+    const [hasError, setHasError] = useState<boolean>(false)
+
 
     useEffect(() => {
         if (userCoins.length !== 0) {
             const intervalId = setInterval(() => {
                 (async function () {
-                    const response = await cryptoCompareService.getCoinPriceRt(
-                        userCoins.map(coin => coin.coinSymbol)
-                    )
-                    if (response) {
+                    try {
+                        const response = await cryptoCompareService.getCoinPriceRt(
+                            userCoins.map(coin => coin.coinSymbol)
+                        )
                         const entry: Sample = { time: new Date().toLocaleTimeString() }
                         Object.keys(response).forEach(key => {
                             entry[key] = response[key].USD
                         })
                         setArrayForGraph(arr => [...arr, entry].slice(-WINDOW_SIZE))
+                        setHasError(false)
+                    }
+                    catch {
+                        setHasError(true)
                     }
                 })()
             }, SAMPLE_INTERVAL_MS)
@@ -49,15 +55,14 @@ export default function Reports() {
     /* derived display data — no state, just calculations */
     const samples = arrayForGraph.length
     const noTracking = userCoins.length === 0
-    const awaitingFirstSample = !noTracking && samples === 0
     const latestStamp = samples > 0 ? String(arrayForGraph[samples - 1].time) : "—"
 
     const seriesMeta = userCoins.map((coin, i) => {
         const colorVar = CHART_VARS[i % CHART_VARS.length]
-        const symbol   = coin.coinSymbol
-        const first    = samples > 0 ? Number(arrayForGraph[0][symbol]) : null
-        const last     = samples > 0 ? Number(arrayForGraph[samples - 1][symbol]) : null
-        const delta    = first != null && last != null && first !== 0
+        const symbol = coin.coinSymbol
+        const first = samples > 0 ? Number(arrayForGraph[0][symbol]) : null
+        const last = samples > 0 ? Number(arrayForGraph[samples - 1][symbol]) : null
+        const delta = first != null && last != null && first !== 0
             ? ((last - first) / first) * 100
             : null
         return { coin, symbol, colorVar, last, delta }
@@ -80,12 +85,12 @@ export default function Reports() {
             </header>
 
             <section className="Reports-status" aria-label="feed status">
-                <StatusCell label="source"   value="cryptocompare" />
+                <StatusCell label="source" value="cryptocompare" />
                 <StatusCell label="interval" value={`${SAMPLE_INTERVAL_MS / 1000}s`} />
-                <StatusCell label="window"   value={`${WINDOW_SIZE} (${WINDOW_SIZE * SAMPLE_INTERVAL_MS / 60_000}m)`} />
-                <StatusCell label="samples"  value={pad3(samples)} accent />
+                <StatusCell label="window" value={`${WINDOW_SIZE} (${WINDOW_SIZE * SAMPLE_INTERVAL_MS / 60_000}m)`} />
+                <StatusCell label="samples" value={pad3(samples)} accent />
                 <StatusCell label="tracking" value={`${userCoins.length}/5`} accent />
-                <StatusCell label="latest"   value={latestStamp} mono />
+                <StatusCell label="latest" value={latestStamp} mono />
             </section>
 
             {noTracking ? (
@@ -104,10 +109,15 @@ export default function Reports() {
                         </span>
                     </header>
 
+                    {samples > 0 && hasError && (
+                        <div className="Reports-stale-warn" role="status">
+                            <AlertTriangle size={11} strokeWidth={2.25} aria-hidden />
+                            <span>last update failed · using stale data</span>
+                        </div>
+                    )}
+
                     <div className="Reports-chart-wrap">
-                        {awaitingFirstSample
-                            ? <AwaitingSample />
-                            : (
+                        {samples > 0 ? (
                                 <ResponsiveContainer width="100%" height={420}>
                                     <LineChart
                                         data={arrayForGraph}
@@ -161,6 +171,26 @@ export default function Reports() {
                                         ))}
                                     </LineChart>
                                 </ResponsiveContainer>
+                            ) : hasError ? (
+                                <section className="Reports-error" role="alert">
+                                    <header className="Reports-error-head">
+                                        <AlertTriangle size={11} strokeWidth={2.25} />
+                                        <span className="caps">feed error</span>
+                                        <span className="Reports-error-rule" aria-hidden />
+                                    </header>
+                                    <ul className="Reports-error-list">
+                                        <li>
+                                            <span className="Reports-error-bullet">{">"}</span>
+                                            <span>failed to fetch live prices from cryptocompare</span>
+                                        </li>
+                                        <li>
+                                            <span className="Reports-error-bullet">{">"}</span>
+                                            <span>refresh the page to try again</span>
+                                        </li>
+                                    </ul>
+                                </section>
+                            ) : (
+                                <AwaitingSample />
                             )}
                     </div>
 
@@ -169,10 +199,10 @@ export default function Reports() {
                             const dir = delta == null
                                 ? "flat"
                                 : delta > 0 ? "up"
-                                : delta < 0 ? "down" : "flat"
+                                    : delta < 0 ? "down" : "flat"
                             const Icon = dir === "up" ? TrendingUp
-                                       : dir === "down" ? TrendingDown
-                                       : Minus
+                                : dir === "down" ? TrendingDown
+                                    : Minus
                             return (
                                 <div className={`Reports-legend-item is-${dir}`} key={coin.coinId}>
                                     <span
@@ -330,7 +360,7 @@ function pad3(n: number) {
 function formatPrice(n: number): string {
     if (!Number.isFinite(n)) return "—"
     if (n >= 1000) return `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
-    if (n >= 1)    return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    if (n >= 1) return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     return `$${n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 6 })}`
 }
 function formatPriceTick(n: number): string {
@@ -338,6 +368,6 @@ function formatPriceTick(n: number): string {
     if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`
     if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`
     if (n >= 1e3) return `$${(n / 1e3).toFixed(1)}k`
-    if (n >= 1)   return `$${n.toFixed(0)}`
+    if (n >= 1) return `$${n.toFixed(0)}`
     return `$${n.toFixed(2)}`
 }

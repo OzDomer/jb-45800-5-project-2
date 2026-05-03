@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Search, X } from "lucide-react"
+import { Search, X, AlertTriangle } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
 import coinGeckoService from "../../shared/services/CoinGeckoService"
@@ -8,7 +8,6 @@ import CoinCard from "./CoinCard"
 import { type SelectedCoin, addCoin, removeCoin } from "../../shared/store/user-coins-slice"
 import CoinPickerModal from "../../shared/components/CoinPickerModal/CoinPickerModal"
 
-// REFACTOR INTO THUNKS AT A LATER DATE
 
 export default function Home() {
     const dispatch = useAppDispatch()
@@ -17,6 +16,7 @@ export default function Home() {
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
     const [openCoinId, setOpenCoinId] = useState<string | null>(null)
     const [pendingCoin, setPendingCoin] = useState<SelectedCoin | null>(null)
+    const [hasError, setHasError] = useState<boolean>(false)
 
     useEffect(() => {
         if (coins.length > 0) {
@@ -24,13 +24,15 @@ export default function Home() {
         }
 
         (async function () {
-            const response = await coinGeckoService.getAllCoins()
-            dispatch(populate(response))
-
+            try {
+                const response = await coinGeckoService.getAllCoins()
+                dispatch(populate(response))
+            }
+            catch {
+                setHasError(true)
+            }
         })()
-    }
-
-        , [coins.length, dispatch])
+    }, [coins.length, dispatch])
 
     function handleMoreInfoClick(coinId: string) {
         setOpenCoinId(current => current === coinId ? null : coinId)
@@ -40,12 +42,15 @@ export default function Home() {
         return coin.name.toLowerCase().includes(term)
             || coin.symbol.toLowerCase().includes(term)
     })
+
     function onLimitReached(coin: SelectedCoin) {
         setPendingCoin(coin)
     }
+
     function onModalClose() {
         setPendingCoin(null)
     }
+
     function onModalConfirm(selectedIds: string[]) {
         if (!pendingCoin) return
         selectedIds.forEach(id => dispatch(removeCoin(id)))
@@ -117,7 +122,27 @@ export default function Home() {
                 </div>
             </div>
 
-            {isLoading && <BootingScreen />}
+            {isLoading && !hasError &&
+                <BootingScreen />}
+            {hasError && (
+                <section className="Home-error" role="alert">
+                    <header className="Home-error-head">
+                        <AlertTriangle size={11} strokeWidth={2.25} />
+                        <span className="caps">error</span>
+                        <span className="Home-error-rule" aria-hidden />
+                    </header>
+                    <ul className="Home-error-list">
+                        <li>
+                            <span className="Home-error-bullet">{">"}</span>
+                            <span>failed to fetch coins from coingecko</span>
+                        </li>
+                        <li>
+                            <span className="Home-error-bullet">{">"}</span>
+                            <span>refresh the page to try again</span>
+                        </li>
+                    </ul>
+                </section>
+            )}
 
             {noMatches && (
                 <div className="Home-empty">

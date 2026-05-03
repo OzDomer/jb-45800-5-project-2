@@ -13,17 +13,17 @@ class CoinGeckoService {
         }
         catch (e) {
             console.error(e)
-            return []
+            throw e
         }
     }
-    async getMoreInfo(coinId: string): Promise<MoreInformation | null> {
+    async getMoreInfo(coinId: string): Promise<MoreInformation> {
         try {
             const { data } = await axios.get<MoreInformation>(URL + `coins/${coinId}`)
             return data
         }
         catch (e) {
             console.error(e)
-            return null
+            throw e
         }
     }
     async getCoinMarketData(coinId: string): Promise<CoinMarketData | null> {
@@ -33,7 +33,7 @@ class CoinGeckoService {
         }
         catch (e) {
             console.error(e)
-            return null
+            throw e
         }
     }
 }

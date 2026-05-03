@@ -20,6 +20,7 @@ export default function CoinCard({ coinCard, isOpen, onMoreInfoClick, onLimitRea
     const dispatch = useAppDispatch()
     const [imgFailed, setImgFailed] = useState(false)
 
+    
     function addCoinToWatchlist() {
         if (userCoins.length >= 5) {
             onLimitReached({ coinId: id, coinSymbol: symbol.toUpperCase(), name, image })
@@ -30,6 +31,7 @@ export default function CoinCard({ coinCard, isOpen, onMoreInfoClick, onLimitRea
     function removeCoinFromWatchlist(coinId: string) {
         dispatch(removeCoin(coinId))
     }
+
     function handleWatchlistToggle() {
         if (isInWatchlist) removeCoinFromWatchlist(id)
         else addCoinToWatchlist()
@@ -37,12 +39,12 @@ export default function CoinCard({ coinCard, isOpen, onMoreInfoClick, onLimitRea
 
     const direction: "up" | "down" | "flat" =
         price_change_percentage_24h > 0 ? "up" :
-        price_change_percentage_24h < 0 ? "down" : "flat"
+            price_change_percentage_24h < 0 ? "down" : "flat"
 
     const cardClass = [
         "CoinCard",
         isInWatchlist && "is-active",
-        isOpen        && "is-expanded",
+        isOpen && "is-expanded",
         `is-${direction}`,
     ].filter(Boolean).join(" ")
 
@@ -119,9 +121,9 @@ interface DeltaPillProps {
     value: number
 }
 function DeltaPill({ direction, value }: DeltaPillProps) {
-    const Icon = direction === "up"   ? TrendingUp
-              : direction === "down" ? TrendingDown
-              : Minus
+    const Icon = direction === "up" ? TrendingUp
+        : direction === "down" ? TrendingDown
+            : Minus
     const glyph = direction === "up" ? "▲" : direction === "down" ? "▼" : "•"
     const sign = value > 0 ? "+" : ""
     return (
@@ -163,6 +165,6 @@ function TerminalSwitch({ on, onClick, label }: TerminalSwitchProps) {
 function formatUsd(n: number | null | undefined): string {
     if (n == null || Number.isNaN(n)) return "—"
     if (n >= 1000) return `$${n.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
-    if (n >= 1)    return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+    if (n >= 1) return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     return `$${n.toLocaleString("en-US", { minimumFractionDigits: 4, maximumFractionDigits: 6 })}`
 }
