@@ -18,8 +18,8 @@ const CHART_VARS = [
     "var(--chart-4)",
     "var(--chart-5)",
 ]
-const SAMPLE_INTERVAL_MS = 5_000
-const WINDOW_SIZE        = 120
+const SAMPLE_INTERVAL_MS = 1_000
+const WINDOW_SIZE        = 600
 
 export default function Reports() {
     const userCoins = useAppSelector(state => state.userCoinsSlice.userCoins)
@@ -75,7 +75,7 @@ export default function Reports() {
                 </h1>
                 <p className="Reports-tagline">
                     Live USD price feed for your watchlist. New sample every
-                    5 seconds, rolling window of 10 minutes.
+                    1 second, rolling window of 10 minutes.
                 </p>
             </header>
 
@@ -270,7 +270,7 @@ function AwaitingSample() {
             <span className="Reports-await-line" aria-hidden />
             <span className="caps Reports-await-tag">awaiting first sample</span>
             <p className="Reports-await-body">
-                first reading lands in &le; 5 seconds.
+                first reading lands in 1 second.
             </p>
         </div>
     )

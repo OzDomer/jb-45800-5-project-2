@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, X } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../../shared/store/hooks"
 import "./Home.css"
@@ -18,19 +18,20 @@ export default function Home() {
     const [openCoinId, setOpenCoinId] = useState<string | null>(null)
     const [pendingCoin, setPendingCoin] = useState<SelectedCoin | null>(null)
 
-    const didRun = useRef(false)
     useEffect(() => {
-        if (didRun.current) return
-        didRun.current = true
-        if (coins.length === 0) {
-            (async function () {
-                const response = await coinGeckoService.getAllCoins()
-                dispatch(populate(response))
-
-            })()
+        if (coins.length > 0) {
+            return
         }
+
+        (async function () {
+            const response = await coinGeckoService.getAllCoins()
+            dispatch(populate(response))
+
+        })()
     }
-        , [coins, dispatch])
+
+        , [coins.length, dispatch])
+
     function handleMoreInfoClick(coinId: string) {
         setOpenCoinId(current => current === coinId ? null : coinId)
     }
