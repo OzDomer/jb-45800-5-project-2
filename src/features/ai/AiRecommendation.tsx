@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff, Save, Sparkles, ArrowRight, Bot, KeyRound, Trash2 } from "lucide-react"
+import { Eye, EyeOff, Save, Sparkles, ArrowRight, Bot, KeyRound, Trash2, ExternalLink } from "lucide-react"
 import { useAppSelector } from "../../shared/store/hooks"
 import "./AiRecommendation.css"
 import coinGeckoService from "../../shared/services/CoinGeckoService"
@@ -76,12 +76,27 @@ export default function AiRecommendation() {
             <section className="Oracle-auth" aria-label="api credentials">
                 <header className="Oracle-auth-bar">
                     <span className="Oracle-auth-tag">[<span> auth </span>]</span>
-                    <span className={`Oracle-auth-state is-${keyState}`}>
-                        <span className="Oracle-auth-dot" aria-hidden />
-                        {keyState === "missing" && "missing key"}
-                        {keyState === "dirty"   && "unsaved changes"}
-                        {keyState === "saved"   && "key saved · local only"}
+                    <span className="Oracle-auth-blurb">
+                        This feature uses your own OpenAI API key.
                     </span>
+                    <div className="Oracle-auth-bar-right">
+                        <a
+                            className="Oracle-auth-help"
+                            href="https://platform.openai.com/api-keys"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="open openai dashboard in a new tab"
+                        >
+                            <span>need a key?</span>
+                            <ExternalLink size={10} strokeWidth={2.25} aria-hidden />
+                        </a>
+                        <span className={`Oracle-auth-state is-${keyState}`}>
+                            <span className="Oracle-auth-dot" aria-hidden />
+                            {keyState === "missing" && "missing key"}
+                            {keyState === "dirty"   && "unsaved changes"}
+                            {keyState === "saved"   && "key saved · local only"}
+                        </span>
+                    </div>
                 </header>
                 <form
                     className="Oracle-auth-form"

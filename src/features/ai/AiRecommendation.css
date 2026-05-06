@@ -82,6 +82,32 @@
 .Oracle-auth-state.is-dirty   { color: var(--warn);   border-color: var(--warn);          background: rgba(245, 215, 110, 0.06); }
 .Oracle-auth-state.is-saved   { color: var(--accent); border-color: var(--accent-border); background: var(--accent-bg); }
 
+.Oracle-auth-blurb {
+  color: var(--text-mute);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+.Oracle-auth-bar-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.Oracle-auth-help {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-mute);
+  text-decoration: none;
+  font-weight: 700;
+  transition: color .15s ease;
+}
+.Oracle-auth-help:hover,
+.Oracle-auth-help:focus-visible {
+  color: var(--accent);
+  outline: none;
+}
+
 .Oracle-auth-form {
   position: relative;
   display: grid;
