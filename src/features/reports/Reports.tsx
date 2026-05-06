@@ -29,26 +29,34 @@ export default function Reports() {
 
     useEffect(() => {
         if (userCoins.length !== 0) {
+            let cancelled = false
             const intervalId = setInterval(() => {
                 (async function () {
                     try {
+
                         const prices = await cryptoCompareService.getCoinPrice(
                             userCoins.map(coin => coin.coinSymbol)
                         )
+
                         const entry: Sample = { time: new Date().toLocaleTimeString() }
-                        prices.forEach(( {symbol, price}) => {
+                        prices.forEach(({ symbol, price }) => {
                             entry[symbol] = price
                         })
-                        setArrayForGraph(arr => [...arr, entry].slice(-WINDOW_SIZE))
-                        setHasError(false)
+                        if (!cancelled) {
+                            setArrayForGraph(arr => [...arr, entry].slice(-WINDOW_SIZE))
+                            setHasError(false)
+                        }
                     }
                     catch {
-                        setHasError(true)
+                        if (!cancelled) setHasError(true)
                     }
                 })()
             }, SAMPLE_INTERVAL_MS)
 
-            return () => { clearInterval(intervalId) }
+            return () => {
+                clearInterval(intervalId)
+                cancelled = true
+            }
         }
     }, [userCoins])
 
@@ -118,80 +126,80 @@ export default function Reports() {
 
                     <div className="Reports-chart-wrap">
                         {samples > 0 ? (
-                                <ResponsiveContainer width="100%" height={420}>
-                                    <LineChart
-                                        data={arrayForGraph}
-                                        margin={{ top: 16, right: 24, bottom: 8, left: 8 }}
-                                    >
-                                        <CartesianGrid
-                                            stroke="var(--grid-line-major)"
-                                            strokeDasharray="2 4"
-                                            vertical
-                                        />
-                                        <XAxis
-                                            dataKey="time"
-                                            stroke="var(--border-strong)"
-                                            tick={chartTickStyle}
-                                            tickLine={{ stroke: "var(--border)" }}
-                                            axisLine={{ stroke: "var(--border-strong)" }}
-                                            minTickGap={48}
-                                        />
-                                        <YAxis
-                                            stroke="var(--border-strong)"
-                                            tick={chartTickStyle}
-                                            tickLine={{ stroke: "var(--border)" }}
-                                            axisLine={{ stroke: "var(--border-strong)" }}
-                                            tickFormatter={formatPriceTick}
-                                            domain={["auto", "auto"]}
-                                            width={56}
-                                        />
-                                        <Tooltip
-                                            content={<TerminalTooltip />}
-                                            cursor={{
-                                                stroke: "var(--accent)",
+                            <ResponsiveContainer width="100%" height={420}>
+                                <LineChart
+                                    data={arrayForGraph}
+                                    margin={{ top: 16, right: 24, bottom: 8, left: 8 }}
+                                >
+                                    <CartesianGrid
+                                        stroke="var(--grid-line-major)"
+                                        strokeDasharray="2 4"
+                                        vertical
+                                    />
+                                    <XAxis
+                                        dataKey="time"
+                                        stroke="var(--border-strong)"
+                                        tick={chartTickStyle}
+                                        tickLine={{ stroke: "var(--border)" }}
+                                        axisLine={{ stroke: "var(--border-strong)" }}
+                                        minTickGap={48}
+                                    />
+                                    <YAxis
+                                        stroke="var(--border-strong)"
+                                        tick={chartTickStyle}
+                                        tickLine={{ stroke: "var(--border)" }}
+                                        axisLine={{ stroke: "var(--border-strong)" }}
+                                        tickFormatter={formatPriceTick}
+                                        domain={["auto", "auto"]}
+                                        width={56}
+                                    />
+                                    <Tooltip
+                                        content={<TerminalTooltip />}
+                                        cursor={{
+                                            stroke: "var(--accent)",
+                                            strokeWidth: 1,
+                                            strokeDasharray: "2 3",
+                                        }}
+                                    />
+                                    {userCoins.map((coin, i) => (
+                                        <Line
+                                            key={coin.coinSymbol}
+                                            type="monotone"
+                                            dataKey={coin.coinSymbol}
+                                            stroke={CHART_VARS[i % CHART_VARS.length]}
+                                            strokeWidth={1.5}
+                                            dot={false}
+                                            activeDot={{
+                                                r: 3,
                                                 strokeWidth: 1,
-                                                strokeDasharray: "2 3",
+                                                stroke: "var(--bg-card)",
                                             }}
+                                            isAnimationActive={false}
                                         />
-                                        {userCoins.map((coin, i) => (
-                                            <Line
-                                                key={coin.coinSymbol}
-                                                type="monotone"
-                                                dataKey={coin.coinSymbol}
-                                                stroke={CHART_VARS[i % CHART_VARS.length]}
-                                                strokeWidth={1.5}
-                                                dot={false}
-                                                activeDot={{
-                                                    r: 3,
-                                                    strokeWidth: 1,
-                                                    stroke: "var(--bg-card)",
-                                                }}
-                                                isAnimationActive={false}
-                                            />
-                                        ))}
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            ) : hasError ? (
-                                <section className="Reports-error" role="alert">
-                                    <header className="Reports-error-head">
-                                        <AlertTriangle size={11} strokeWidth={2.25} />
-                                        <span className="caps">feed error</span>
-                                        <span className="Reports-error-rule" aria-hidden />
-                                    </header>
-                                    <ul className="Reports-error-list">
-                                        <li>
-                                            <span className="Reports-error-bullet">{">"}</span>
-                                            <span>failed to fetch live prices from cryptocompare</span>
-                                        </li>
-                                        <li>
-                                            <span className="Reports-error-bullet">{">"}</span>
-                                            <span>refresh the page to try again</span>
-                                        </li>
-                                    </ul>
-                                </section>
-                            ) : (
-                                <AwaitingSample />
-                            )}
+                                    ))}
+                                </LineChart>
+                            </ResponsiveContainer>
+                        ) : hasError ? (
+                            <section className="Reports-error" role="alert">
+                                <header className="Reports-error-head">
+                                    <AlertTriangle size={11} strokeWidth={2.25} />
+                                    <span className="caps">feed error</span>
+                                    <span className="Reports-error-rule" aria-hidden />
+                                </header>
+                                <ul className="Reports-error-list">
+                                    <li>
+                                        <span className="Reports-error-bullet">{">"}</span>
+                                        <span>failed to fetch live prices from cryptocompare</span>
+                                    </li>
+                                    <li>
+                                        <span className="Reports-error-bullet">{">"}</span>
+                                        <span>refresh the page to try again</span>
+                                    </li>
+                                </ul>
+                            </section>
+                        ) : (
+                            <AwaitingSample />
+                        )}
                     </div>
 
                     <footer className="Reports-legend">
