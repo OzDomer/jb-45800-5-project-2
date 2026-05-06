@@ -2,6 +2,8 @@
 
 Real-time crypto terminal. Track up to 5 coins, watch live prices, get AI buy/don't-buy verdicts.
 
+🔗 [Open the live app](https://cryptonite-one.vercel.app)
+
 ## Screenshots
 <img width="2557" height="1272" alt="Screenshot 2026-05-06 131026" src="https://github.com/user-attachments/assets/604ab16e-6476-4d89-9aa6-9c98ddcb6aa2" />
 <img width="2555" height="1270" alt="Screenshot 2026-05-06 130854" src="https://github.com/user-attachments/assets/574a9213-1f64-4412-8bfb-05e7a90ebc7c" />
