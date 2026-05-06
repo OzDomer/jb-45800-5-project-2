@@ -32,12 +32,12 @@ export default function Reports() {
             const intervalId = setInterval(() => {
                 (async function () {
                     try {
-                        const response = await cryptoCompareService.getCoinPriceRt(
+                        const prices = await cryptoCompareService.getCoinPrice(
                             userCoins.map(coin => coin.coinSymbol)
                         )
                         const entry: Sample = { time: new Date().toLocaleTimeString() }
-                        Object.keys(response).forEach(key => {
-                            entry[key] = response[key].USD
+                        prices.forEach(( {symbol, price}) => {
+                            entry[symbol] = price
                         })
                         setArrayForGraph(arr => [...arr, entry].slice(-WINDOW_SIZE))
                         setHasError(false)
