@@ -26,7 +26,7 @@ export default function MoreInfo({ coinId }: MoreInfoProps) {
                 if (!cancelled) setCoinInformation(response)
             }
             catch {
-                setHasError(true)
+                if (!cancelled) setHasError(true)
             }
         })()
         return () => { cancelled = true }
