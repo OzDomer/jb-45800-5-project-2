@@ -44,7 +44,7 @@ class OpenAiService {
                             required: ["verdict", "explanation", "flavor"],
                             additionalProperties: false
                         },
-                    strict: true
+                        strict: true
                     }
                 }
             },
@@ -53,8 +53,9 @@ class OpenAiService {
                     { Authorization: `Bearer ${apiKey}` }
             },
         )
-        //  the exact shape is derived from the openai model used gpt-5-nano index 0 is the reasoning ( token used etc.) index 1 is the actual response
-        return JSON.parse(data.output[1].content[0].text) as RecommendationPayload
+        const messageItem = data.output.find(item => item.type === "message")
+        if (!messageItem) throw new Error("Failed finding message item in api response")
+        return JSON.parse(messageItem.content[0].text) as RecommendationPayload
 
     }
 }
