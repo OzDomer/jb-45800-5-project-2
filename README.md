@@ -15,7 +15,7 @@ React · TypeScript · Vite · Redux Toolkit · recharts · axios
 ## Architecture
 - Organized by feature rather than by component type — keeps everything related to one feature co-located, and `shared/` holds infrastructure used across features.
 - Service translation boundary — vendor API shapes never leak into components (`CoinPrice` model, not `{ [coin]: { USD } }` envelopes)
-- Discriminated union state machine for AI request lifecycle (idle / loading / success / error)
+- Discriminated union state machine for AI request lifecycle (idle(undefined) / loading / success / error)
 - `localStorage` hydration via Redux `preloadedState` + `store.subscribe`
 - Custom modal with mount-gated, uncontrolled API
 

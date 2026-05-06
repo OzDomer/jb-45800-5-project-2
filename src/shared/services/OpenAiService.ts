@@ -53,8 +53,12 @@ class OpenAiService {
                     { Authorization: `Bearer ${apiKey}` }
             },
         )
-        const messageItem = data.output.find(item => item.type === "message")
-        if (!messageItem) throw new Error("Failed finding message item in api response")
+        const messageItem = data.output.find(item =>
+            item.type === "message" && item.content.length > 0)
+
+        if (!messageItem || messageItem.type !== "message") {
+            throw new Error("Failed finding message item in api response")
+        }
         return JSON.parse(messageItem.content[0].text) as RecommendationPayload
 
     }
